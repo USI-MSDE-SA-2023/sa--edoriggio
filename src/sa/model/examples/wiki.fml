@@ -1,0 +1,10 @@
+E-Shop : [
+    [*] Catalogue,
+    [*] Payment: (
+            [*] Bank Transfer, [ ] Credit Card
+    ),
+    [*] Security: {
+        High, Standard
+    },
+    [ ] Search
+]
