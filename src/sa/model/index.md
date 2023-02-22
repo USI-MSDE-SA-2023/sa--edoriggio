@@ -5,7 +5,7 @@ title:
 Model of My Project
 ---
 author:
-Enter Your Full Name
+Edoardo Riggio
 ---
  
 # Getting started
@@ -21,6 +21,9 @@ We begin by selecting a suitable project domain.
 
 
 # Ex - Domain Selection 
+This project is for USI students and is called USI Calendar. Students can – as of now – download the calendar of the current semester's courses from USI's website. The problem with this solution is that it is not possible for students to choose which courses to include in the calendar, and which to exclude. USI Calendar aims at giving the possibility to users to be able to choose and display in their calendar their own courses. Moreover, USI Calendar will create "classrooms" for each course. In these classrooms students will be automatically added based on the courses they chose to include in their calendars.
+
+---
 
 {.instructions
 

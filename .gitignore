@@ -4,6 +4,7 @@ build.json
 
 # Finder
 .DS_Store
+.idea
 
 # Logs
 logs
