@@ -1,0 +1,32 @@
+## ADR #2 (Exporting Assignments Calendar)
+
+1. What did you decide?
+
+Exporting the calendar for the assignments together with the courses' schedule calendar.
+
+2. What was the context for your decision?
+
+The goal is to facilitate the life of the student by including the calendar of the assignments together with the
+calendar of the selected courses' schedules. The assignments' calendar needs to be taken from iCorsi's API, so the
+process will a bit longer since the user needs to input their iCorsi email and token.
+
+3. What is the problem you are trying to solve?
+
+Should the assignment's calendar from iCorsi be included in the courses' schedule calendar?
+
+4.  Which alternative options did you consider?
+
+ * Exporting the calendar as another URL to be copied and saved by the student;
+ * Exporting the calendar together with the schedules calendar;
+ * Not using this feature because of the API's restrictions.
+
+5. Which one did you choose?
+
+I chose the second option: Exporting the calendar together with the schedules calendar.
+
+6. What is the main reason for that?
+
+The following are the consequences of this decision:
+ + The student will only need to copy one URL and deal with one calendar;
+ + The student will have a synchronized list of all the deadlines for the courses he/she attends;
+ - It is more tedious for the user to do the initial setup (generate the token + write down the email).

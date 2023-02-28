@@ -1,0 +1,31 @@
+## ADR #3 (Adding Users to Classes)
+
+1. What did you decide?
+
+Students will be automatically added to classrooms based on the courses they are enrolled in iCorsi.
+
+2. What was the context for your decision?
+
+The goal is to facilitate communication between students and access to course material by creating classes in which
+only the enrolled students can enter. Moreover, students could be also automatically added to each classroom thanks to
+the course registration list provided by the iCorsi API.
+
+3. What is the problem you are trying to solve?
+
+Should students be added to the classrooms automatically, and if so, based on which criteria?
+
+4.  Which alternative options did you consider?
+
+ * Users are not automatically added to classrooms, they must select their courses manually;
+ * Users are automatically added to classes based on the courses they choose when creating the calendar;
+ * Users are automatically added to classes based on the courses they are enrolled in iCorsi.
+
+5. Which one did you choose?
+
+I chose the third option: Users are added to classes based on the courses they are enrolled in iCorsi.
+
+6. What is the main reason for that?
+
+The following are the consequences of this decision:
+ + The user does not need to check him/herself which courses they are enrolled in;
+ + If the courses change, the classes can be automatically/manually updated thanks to iCorsi's API

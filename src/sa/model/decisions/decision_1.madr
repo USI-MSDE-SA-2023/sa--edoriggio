@@ -1,0 +1,35 @@
+## ADR #1 (Choosing Courses)
+
+1. What did you decide?
+
+The user is able to select courses from all programs and export the selected courses' schedules as a single calendar.
+
+2. What was the context for your decision?
+
+The goal is to create a system in which students can select the courses they attend. After the courses have been
+selected, the system will generate a URL to the custom calendar containing all the courses' schedules. The URL can
+then be added to the calendar of choice.
+
+3. What is the problem you are trying to solve?
+
+How can students select the courses that they attend in order to create a custom calendar?
+
+4. Which alternative options did you consider?
+
+ * Making the student select any course from any program and generate the calendar based on those choices;
+ * Making the student select any course only from one program and generate the calendar based on those choices;
+ * Making the student select any course from any program/one program, and generate one calendar for each choice.
+
+5. Which one did you choose?
+
+I chose the first option: Making the student select any course from any program and generate the calendar based on
+                          those choices.
+
+6. What is the main reason for that?
+
+The following are the consequences of this decision:
+ + The student has more flexibility when choosing which courses to subscribe to;
+ + Only one calendar is generated, no need to create n calendar for n courses;
+ + The student can also select courses from programs that he is not enrolled in;
+ - This type of choice is more challenging to display on a UI;
+ - If the student drops out from one of the courses, he/she needs to generate a new calendar without that course.
