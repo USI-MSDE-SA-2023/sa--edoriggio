@@ -79,10 +79,9 @@ Exceed: >2 ADR
 
 }
 
-![Architectural Decision Record Template](./decisions/decision_template.madr)
-![Architectural Decision Record Template](./decisions/decision_1.madr)
-![Architectural Decision Record Template](./decisions/decision_2.madr)
-![Architectural Decision Record Template](./decisions/decision_3.madr)
+![](./decisions/decision_1.madr)
+![](./decisions/decision_2.madr)
+![](./decisions/decision_3.madr)
 
 
 # Ex - Quality Attribute Scenario
@@ -129,11 +128,12 @@ Exceed: >6 scenarios using challenging qualities
 
 }
 
-## Example Scenario
 
-Quality: _Recoverability_
+## Scenario #1
 
-Scenario: In case of power failure, rebooting the system should take up to 20 seconds.
+Quality: _Testability_
+
+Scenario: In the case of a new release being pushed, it must have a code coverage of at least 90% and pass all tests before being deployed.
 
 ```puml
 @startuml
@@ -142,12 +142,40 @@ skinparam componentStyle rectangle
 skinparam monochrome true
 skinparam shadowing false
 
-rectangle "After Power has been restored" {
+rectangle "After Release has been Pushed" {
 
-rectangle "Admin" as Source
-rectangle "max 20s" as Measure
+rectangle "Release" as Source
+rectangle "min 90% Coverage and Pass Tests" as Measure
 
-Source -> [System] : "Boot"
+Source -> [System] : "Push"
+
+[System] -> [Measure] : "Test and Code Coverage Reports"
+
+}
+
+@enduml
+```
+
+
+## Scenario #2
+
+Quality: _Deployability_
+
+Scenario: If all tests pass and the code coverage is at least 90%, the release can be deployed on the production server.
+
+```puml
+@startuml
+
+skinparam componentStyle rectangle
+skinparam monochrome true
+skinparam shadowing false
+
+rectangle "After Tests Pass" {
+
+rectangle "Test and Code Coverage Reports" as Source
+rectangle "Service Online" as Measure
+
+Source -> [System] : "Pass"
 
 [System] -> [Measure] : "Online"
 
@@ -155,7 +183,146 @@ Source -> [System] : "Boot"
 
 @enduml
 ```
- 
+
+
+## Scenario #3
+
+Quality: _Recoverability_
+
+Scenario: After maintenance work, the server must come back online in less than 1 minute.
+
+```puml
+@startuml
+
+skinparam componentStyle rectangle
+skinparam monochrome true
+skinparam shadowing false
+
+rectangle "After Finishing Maintenance Work on Server" {
+
+rectangle "Maintenance Finished" as Source
+rectangle "Less than 1 Min" as Measure
+
+Source -> [System] : "Restart Service"
+
+[System] -> [Measure] : "Online"
+
+}
+
+@enduml
+```
+
+
+## Scenario #4
+
+Quality: _Authentication_
+
+Scenario: When a user tries to access the classrooms, it will be redirected to a login/sign up page.
+
+```puml
+@startuml
+
+skinparam componentStyle rectangle
+skinparam monochrome true
+skinparam shadowing false
+
+rectangle "When Trying to Access a Classroom" {
+
+rectangle "User" as Source
+rectangle "User Authenticated" as Measure
+
+Source -> [System] : "Trying to Access Classroom"
+
+[System] -> [Measure] : "Login Page"
+
+}
+
+@enduml
+```
+
+
+## Scenario #5
+
+Quality: _Durability_
+
+Scenario: If the shortened URL hasn't been used for at least 1 week, remove it from the database.
+
+```puml
+@startuml
+
+skinparam componentStyle rectangle
+skinparam monochrome true
+skinparam shadowing false
+
+rectangle "Every 1 Week" {
+
+rectangle "Checker Process" as Source
+rectangle "Deleted URL" as Measure
+
+Source -> [System] : "1 Week"
+
+[System] -> [Measure] : "Delete"
+
+}
+
+@enduml
+```
+
+## Scenario #6
+
+Quality: _Composability_
+
+Scenario: When all components are ready, they are composed by means of a docker compose files into docker images.
+
+```puml
+@startuml
+
+skinparam componentStyle rectangle
+skinparam monochrome true
+skinparam shadowing false
+
+rectangle "When Components are Ready" {
+
+rectangle "Components" as Source
+rectangle "Docker Image" as Measure
+
+Source -> [System] : "Ready"
+
+[System] -> [Measure] : "Composition"
+
+}
+
+@enduml
+```
+
+
+## Scenario #7
+
+Quality: _Ease of Support_
+
+Scenario: If the user inputs a wrong token for the iCorsi integration, an error will be showed to the user describing the issue in detail.
+
+```puml
+@startuml
+
+skinparam componentStyle rectangle
+skinparam monochrome true
+skinparam shadowing false
+
+rectangle "After the User Inserted a Wrong Token" {
+
+rectangle "User" as Source
+rectangle "Banner with Error Message" as Measure
+
+Source -> [System] : "Inputs Wrong Token"
+
+[System] -> [Measure] : "Error Message"
+
+}
+
+@enduml
+```
+
 
 # Ex - Quality Attribute Tradeoff
 
