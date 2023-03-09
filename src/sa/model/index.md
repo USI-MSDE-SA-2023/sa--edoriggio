@@ -157,6 +157,15 @@ Source -> [System] : "Push"
 @enduml
 ```
 
+{.feedback 
+
+Overlap between environment and source/stimulus
+
+Environment: New Release -
+Source: Test Driver -
+Stimulus: Check
+
+}
 
 ## Scenario #2
 
@@ -185,6 +194,15 @@ Source -> [System] : "Pass"
 @enduml
 ```
 
+{.feedback 
+
+Swap environment (precondition) and source/stimulus (action)
+
+Environment: Tests are Green with 90% Coverage -
+Source: Build Infrastructure -
+Stimulus: Deploy Release
+
+}
 
 ## Scenario #3
 
@@ -213,6 +231,11 @@ Source -> [System] : "Restart Service"
 @enduml
 ```
 
+{.feedback 
+
+Overlap Environment and Source
+
+}
 
 ## Scenario #4
 
@@ -241,6 +264,11 @@ Source -> [System] : "Inactive"
 @enduml
 ```
 
+{.feedback 
+
+ok
+
+}
 
 ## Scenario #5
 
@@ -269,6 +297,12 @@ Source -> [System] : "Unused"
 @enduml
 ```
 
+{.feedback 
+
+Overlap between Environment and Measure
+
+}
+
 ## Scenario #6
 
 Quality: _Composability_
@@ -295,6 +329,15 @@ Source -> [System] : "Ready"
 
 @enduml
 ```
+
+{.feedback 
+
+Overlap between Environment and Source/Simulus
+Response and Stimulus Swapped?
+
+How would you test this scenario?
+
+}
 
 
 ## Scenario #7
@@ -324,7 +367,13 @@ Source -> [System] : "Access"
 @enduml
 ```
 
+{.feedback 
 
+Overlap between Environment and Source/Simulus
+
+Environment could be "Normal Operation", "First-time Usage", "Black Friday" to define the context for the performance test.
+
+}
 
 # Ex - Quality Attribute Tradeoff
 
