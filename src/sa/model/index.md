@@ -145,10 +145,10 @@ skinparam shadowing false
 
 rectangle "After a new Release has been Pushed" {
 
-rectangle "Release" as Source
+rectangle "Test Driver" as Source
 rectangle "min 90% Coverage and Pass Tests" as Measure
 
-Source -> [System] : "Push"
+Source -> [System] : "Check"
 
 [System] -> [Measure] : "Test and Code Coverage Reports"
 
@@ -156,16 +156,6 @@ Source -> [System] : "Push"
 
 @enduml
 ```
-
-{.feedback 
-
-Overlap between environment and source/stimulus
-
-Environment: New Release -
-Source: Test Driver -
-Stimulus: Check
-
-}
 
 ## Scenario #2
 
@@ -180,12 +170,12 @@ skinparam componentStyle rectangle
 skinparam monochrome true
 skinparam shadowing false
 
-rectangle "During the Deployment Phase" {
+rectangle "Green Tests and at least 90% Coverage" {
 
-rectangle "Test and Code Coverage Reports" as Source
+rectangle "Build Infrastructure" as Source
 rectangle "Service Online" as Measure
 
-Source -> [System] : "Pass"
+Source -> [System] : "Deploy Release"
 
 [System] -> [Measure] : "Online"
 
@@ -193,16 +183,6 @@ Source -> [System] : "Pass"
 
 @enduml
 ```
-
-{.feedback 
-
-Swap environment (precondition) and source/stimulus (action)
-
-Environment: Tests are Green with 90% Coverage -
-Source: Build Infrastructure -
-Stimulus: Deploy Release
-
-}
 
 ## Scenario #3
 
@@ -217,7 +197,7 @@ skinparam componentStyle rectangle
 skinparam monochrome true
 skinparam shadowing false
 
-rectangle "After Finishing Maintenance Work on Server" {
+rectangle "During Maintenance Work on Server" {
 
 rectangle "Maintenance Finished" as Source
 rectangle "Less than 1 Min" as Measure
@@ -230,12 +210,6 @@ Source -> [System] : "Restart Service"
 
 @enduml
 ```
-
-{.feedback 
-
-Overlap Environment and Source
-
-}
 
 ## Scenario #4
 
@@ -264,12 +238,6 @@ Source -> [System] : "Inactive"
 @enduml
 ```
 
-{.feedback 
-
-ok
-
-}
-
 ## Scenario #5
 
 Quality: _Durability_
@@ -283,7 +251,7 @@ skinparam componentStyle rectangle
 skinparam monochrome true
 skinparam shadowing false
 
-rectangle "Every 1 Week" {
+rectangle "During URL routine check" {
 
 rectangle "URL" as Source
 rectangle "1 Week" as Measure
@@ -296,12 +264,6 @@ Source -> [System] : "Unused"
 
 @enduml
 ```
-
-{.feedback 
-
-Overlap between Environment and Measure
-
-}
 
 ## Scenario #6
 
@@ -316,28 +278,19 @@ skinparam componentStyle rectangle
 skinparam monochrome true
 skinparam shadowing false
 
-rectangle "When Components are Ready" {
+rectangle "When a new Version is Pushed on the Deploy Branch" {
 
 rectangle "Components" as Source
-rectangle "2 Docker Images" as Measure
+rectangle "Composed Images" as Measure
 
 Source -> [System] : "Ready"
 
-[System] -> [Measure] : "Images Composed"
+[System] -> [Measure] : "2 Docker Images"
 
 }
 
 @enduml
 ```
-
-{.feedback 
-
-Overlap between Environment and Source/Simulus
-Response and Stimulus Swapped?
-
-How would you test this scenario?
-
-}
 
 
 ## Scenario #7
@@ -353,7 +306,7 @@ skinparam componentStyle rectangle
 skinparam monochrome true
 skinparam shadowing false
 
-rectangle "When Trying to Access the Website" {
+rectangle "When Trying to Access the Website for the First Time" {
 
 rectangle "User" as Source
 rectangle "Less than 1 Sec" as Measure
@@ -366,14 +319,6 @@ Source -> [System] : "Access"
 
 @enduml
 ```
-
-{.feedback 
-
-Overlap between Environment and Source/Simulus
-
-Environment could be "Normal Operation", "First-time Usage", "Black Friday" to define the context for the performance test.
-
-}
 
 # Ex - Quality Attribute Tradeoff
 
