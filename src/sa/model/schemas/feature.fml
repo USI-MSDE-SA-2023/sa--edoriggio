@@ -1,0 +1,39 @@
+/// USI Calendar - Feature Tree
+
+USI Calendar: [
+    [*] Calendar Generation : [
+        [*] Courses Selection : (
+            Course 1,
+            ...,
+            Course N
+        ),
+        [ ] iCorsi Deadlines
+    ],
+    [ ] iCorsi Integration : {
+        USI Email : [
+            [*] iCorsi Auth Token
+        ],
+        iCorsi User Id : [
+            [*] iCorsi Auth Token
+        ]
+    },
+    [ ] GitHub Integration : [
+        [*] GitHub Auth
+    ],
+    [ ] Classroom Subscription : [
+        [*] Chatroom,
+        [*] Course Documents,
+        [ ] GitHub Classroom Links
+    ]
+]
+
+
+/// Implications
+
+iCorsi Deadlines => USI Email
+iCorsi Deadlines => iCorsi User Id
+
+Course Documents => USI Email
+Course Documents => iCorsi User Id
+
+GitHub Classroom Links => GitHub Auth

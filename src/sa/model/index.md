@@ -372,6 +372,11 @@ Exceed: Include more than 8 non-trivial features, indicate which are found in yo
 
 }
 
+![](./schemas/feature.fml)
+
+<br/>
+
+The feature that belongs to a "competitor" (i.e. USI), is the generation of the calendars with all courses of a program. All the other features are found in the USI Calendar Project.
 
 
 # Ex - Context Diagram
