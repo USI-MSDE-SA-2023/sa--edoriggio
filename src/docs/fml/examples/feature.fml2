@@ -1,0 +1,16 @@
+root "Product"
+  has
+    req "Required Feature" required
+      hasOneOf
+        altSub1 "Alternative Sub Feature1"
+          excludes sub2
+        altSub2 "Alternative Sub Feature2"
+    opt "Optional Feature" optional
+      has
+        reqSub "Required Sub Feature" required
+        optSub "Optional Sub Feature" optional
+    comb "Combined Feature"
+      hasSome
+        sub1 "Sub Feature1"
+          requires optSub
+        sub2 "Sub Feature2"

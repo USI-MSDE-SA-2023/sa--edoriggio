@@ -13,9 +13,10 @@ const marked_toc = require('marked');
 const plantuml = require('plantuml');
 const _ = require('lodash');
 const slugify = require('uslug');
+const { transformFml } = require('./fmlTransformer')
 
 
-
+const fml_syntax_highlight = require('./fml_syntax_highlight');
 
 const child_process = require('child_process');
 
@@ -87,7 +88,7 @@ function toc(str) {
 
     // var defaultTemplate = '<%= depth %><%= bullet %>[<%= heading %>](#<%= url %>)\n';
     var defaultTemplate = '<a class="d<%=d%>" href="#<%= url %>"><%- heading %></a>\n';
-    
+
     const utils = {};
 
     utils.arrayify = function (arr) {
@@ -137,11 +138,11 @@ function toc(str) {
     var omit = ['grunt', 'helper', 'handlebars-helper', 'mixin', 'filter', 'assemble-contrib', 'assemble'];
 
     utils.strip = function (name, options) {
-    var opts = _.extend({}, options);
-    if(opts.omit === false) {omit = [];}
-    var exclusions = _.union(omit, utils.arrayify(opts.strip || []));
-    var re = new RegExp('^(?:' + exclusions.join('|') + ')[-_]?', 'g');
-    return name.replace(re, '');
+        var opts = _.extend({}, options);
+        if (opts.omit === false) { omit = []; }
+        var exclusions = _.union(omit, utils.arrayify(opts.strip || []));
+        var re = new RegExp('^(?:' + exclusions.join('|') + ')[-_]?', 'g');
+        return name.replace(re, '');
     };
 
     var opts = {
@@ -151,7 +152,7 @@ function toc(str) {
         maxDepth: 3,
         slugifyOptions: { allowedChars: '-' },
         slugify: function (text) {
-            return slugify(text, opts.slugifyOptions).replace("ex-","ex---");
+            return slugify(text, opts.slugifyOptions).replace("ex-", "ex---");
         }
     };
 
@@ -185,8 +186,8 @@ function toc(str) {
         token.heading = opts.strip ? utils.strip(token.text, opts) : token.text;
 
         if (token.heading.indexOf("Ex -") >= 0) {
-            task_count++;
             token.heading = token.heading.replace("Ex -", `<span class='task'>${task_count}.</span> `);
+            task_count++;
         }
 
         // Create a "slugified" id for linking
@@ -220,7 +221,7 @@ function toc(str) {
         });
 
         tocArray.push(data);
-        toc += ejs.render(defaultTemplate,data);
+        toc += ejs.render(defaultTemplate, data);
         //toc += _.template(opts.template || defaultTemplate, data);
     });
 
@@ -284,7 +285,7 @@ renderer.paragraph = function (text) {
 renderer._code = renderer.code;
 
 renderer.code = function (code, infostring, escaped) {
-    //console.log(code, infostring, escaped);
+    // console.log(code, infostring, escaped);
     if (infostring) {
         if (infostring.startsWith("puml")) {
             let i = epuml_count++;
@@ -293,16 +294,69 @@ renderer.code = function (code, infostring, escaped) {
             })
             return `<img src="./puml_e${i}.svg">`;
         }
+
+        if (infostring.startsWith("fml1") || infostring.startsWith("fml2")) {
+
+            let fml = "" + code;
+
+            let i = fml_count++;
+
+            const fml_output = renderer._out_folder + "fml_" + i + ".svg";
+            const tempFile = renderer._out_folder + `fml_${i}.temp.fml`;
+            
+            try{
+                fs.ensureFileSync(tempFile);
+        
+                const transformedFml = transformFml(code, infostring.startsWith("fml1") ? "Flat" : "Nested")
+
+                fs.writeFile(tempFile, transformedFml)
+                .then(_ => {
+                    run("node fml " + tempFile + " " + fml_output, undefined, () => {
+                        fs.remove(tempFile)
+                    })
+                })
+
+                if (infostring.indexOf("?src") >= 0) {
+
+                    return `<aside class="flex"><pre><code>${highlight_fml(fml)}</code></pre><img src="./fml_${i}.svg"></aside>`;
+
+                } else {
+                
+                    return `<img src="./fml_${i}.svg">`;
+
+                }
+
+            } catch(e) {
+                //the original code will be printed (opportunity to show the error)
+                console.log(e);
+            }
+        
+        }
+
     }
     return renderer._code(code, infostring, escaped);
 
 };
+
+//TODO (["'])(?:(?=(\\?))\2.)*?\1 for quoted strings (which do not contain keywords)
+function highlight_fml(s) {
+    return fml_syntax_highlight.parse(s);
+    let keywords = ["feature", "optional", "required", "hasOneOf", "hasSome", "has", "requires", "excludes"] //fml1
+
+    return keywords.reduce((s, k) => s.replace(new RegExp(k+" ", "g"), `<b>${k}</b> `, s)
+                                      .replace(new RegExp(k+"\n", "g"), `<b>${k}</b>\n`, s)
+                                      .replace(new RegExp(k, "g"), `<b>${k}</b>`), s);
+}
 
 renderer._image = renderer.image;
 
 renderer.image = function (href, title, text) {
 
     //console.log(href, title, text);
+
+    let url = new URL(href, "http://localhost/");
+
+    href = "." + url.pathname;
 
     if (href.endsWith(".puml")) {
 
@@ -319,7 +373,38 @@ renderer.image = function (href, title, text) {
 
     }
 
-    if (href.endsWith(".fml")) {
+    if (href.endsWith(".fml1") || href.endsWith(".fml2")) {
+
+        let i = fml_count++;
+
+        const fml_output = renderer._out_folder + "fml_" + i + ".svg";
+        const tempFile = renderer._out_folder + `fml_${i}.temp.fml`;
+            
+        fs.ensureFileSync(tempFile);
+
+        let fml = fs.readFileSync(href.replace("./", renderer._in_folder), 'utf8');
+
+        const transformedFml = transformFml(fml, href.endsWith(".fml1") ? "Flat" : "Nested")
+
+        fs.writeFile(tempFile, transformedFml)
+            .then(_ => {
+                run("node fml " + tempFile + " " + fml_output, undefined, () => {
+                    fs.remove(tempFile)
+                })
+            })
+
+        if (url.searchParams.has("src")) {
+
+            return `<aside class="flex"><pre><code>${highlight_fml(fml)}</code></pre><img src="./fml_${i}.svg" alt="${text}"></aside>`;
+
+        } else {
+        
+            return `<img src="./fml_${i}.svg" alt="${text}">`;
+
+        }
+    }
+
+    if (href.endsWith(".fml") || href.endsWith(".fml0")) {
 
         let i = fml_count++;
 
@@ -343,12 +428,20 @@ renderer.image = function (href, title, text) {
 
     }
 
-    if (href.endsWith(".madr")) {
+    if (href.endsWith(".madr") || href.endsWith(".md")) {
 
         let md = fs.readFileSync(href.replace("./", renderer._in_folder));
 
         return `<h3>${text}</h3>` + marked.parse("" + new String(md));
 
+    }
+
+    if (href.endsWith(".svg") || href.endsWith(".png") ) {
+        let fileName = href.split("/").slice(-1);
+        let out = renderer._out_folder + `${fileName}`;
+        fs.copySync(href.replace("./", renderer._in_folder), out);
+
+        return `<img src="${fileName}" alt="${text}">`;
     }
 
     return renderer._image(href, title, text);
@@ -364,8 +457,8 @@ renderer.heading = function (text, level, raw, slugger) {
     // console.log(text);
 
     if (text.indexOf("Ex -") >= 0) {
-        task_count++;
         text = text.replace("Ex -", `<span class='task'>${task_count}.</span> `);
+        task_count++;
     }
 
     // let sec = "<section>"

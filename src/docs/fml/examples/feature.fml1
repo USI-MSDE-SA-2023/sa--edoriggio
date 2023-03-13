@@ -1,0 +1,22 @@
+feature root "Product"
+feature req "Required Feature"
+feature altSub1 "Alternative Sub Feature1"
+feature altSub2 "Alternative Sub Feature2"
+feature opt "Optional Feature"
+feature reqSub "Required Sub Feature"
+feature optSub "Optional Sub Feature"
+feature comb "Combined Feature"
+feature sub1 "Sub Feature1"
+feature sub2 "Sub Feature2"
+
+root has req
+root canHave opt
+root has comb
+opt has reqSub
+opt canHave optSub
+
+req hasOneOf [altSub1, altSub2]
+comb hasSome [sub1, sub2]
+
+sub1 requires optSub
+altSub1 excludes sub2
