@@ -376,7 +376,7 @@ Exceed: Include more than 8 non-trivial features, indicate which are found in yo
 
 <br/>
 
-The feature that belongs to a "competitor" (i.e. USI), is the generation of the calendars with all courses of a program. All the other features are found in the USI Calendar Project.
+The feature that belongs to a "competitor" (i.e. USI), is the generation of the calendars with all courses of a program. All the other features are only found in the USI Calendar project.
 
 
 # Ex - Context Diagram

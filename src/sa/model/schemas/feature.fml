@@ -2,11 +2,10 @@
 
 USI Calendar: [
     [*] Calendar Generation : [
-        [*] Courses Selection : (
-            Course 1,
-            ...,
-            Course N
-        ),
+        [*] Courses Selection : {
+            From one Program,
+            From any Program
+        },
         [ ] iCorsi Deadlines
     ],
     [ ] iCorsi Integration : {
@@ -18,12 +17,22 @@ USI Calendar: [
         ]
     },
     [ ] GitHub Integration : [
-        [*] GitHub Auth
+        [*] GitHub Auth,
+        [*] Github Webhooks : (
+            Commit Push : [
+                [ ] Filter on commit message
+            ],
+            Repo Creation,
+            Issue Assigned
+        )
     ],
     [ ] Classroom Subscription : [
         [*] Chatroom,
         [*] Course Documents,
-        [ ] GitHub Classroom Links
+        [ ] GitHub Classroom : (
+            Repositories,
+            Notifications
+        )
     ]
 ]
 
@@ -36,4 +45,5 @@ iCorsi Deadlines => iCorsi User Id
 Course Documents => USI Email
 Course Documents => iCorsi User Id
 
-GitHub Classroom Links => GitHub Auth
+Repositories => GitHub Auth
+Notifications => GitHub Auth
