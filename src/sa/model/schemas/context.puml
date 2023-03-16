@@ -1,0 +1,22 @@
+@startuml
+!include <C4/C4_Container>
+
+Person(user_s, "Students", "")
+Person(user_p, "Professors", "")
+
+System_Boundary(boundary, "USI Calendar") {
+
+}
+
+System_Ext(icorsi, "iCorsi")
+System_Ext(github, "Github")
+System_Ext(calendar, "Calendar Service")
+
+Rel(user_s, boundary, "Request Calendars")
+Rel(user_p, boundary, "Offer Custom Calendars")
+
+Rel(github, boundary, "Webhooks and Export", "Github will trigger webhooks whenever certain conditions are met. Moreover, it will make the list of links of the Gihub Classroom repos available to the system")
+Rel(icorsi, boundary, "Export", "iCorsi will make the courses list, as well as the deadline calendar available to the system")
+Rel(boundary, calendar, "Export", "The system will export either the .ics file or the URL of the combined courses and deadline calendar")
+
+@enduml

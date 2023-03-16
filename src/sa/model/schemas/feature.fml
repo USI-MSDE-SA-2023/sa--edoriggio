@@ -16,8 +16,8 @@ USI Calendar: [
             [*] iCorsi Auth Token
         ]
     },
-    [ ] GitHub Integration : [
-        [*] GitHub Auth,
+    [ ] Github Integration : [
+        [*] Github Auth,
         [*] Github Webhooks : (
             Commit Push : [
                 [ ] Filter on commit message
@@ -29,7 +29,7 @@ USI Calendar: [
     [ ] Classroom Subscription : [
         [*] Chatroom,
         [*] Course Documents,
-        [ ] GitHub Classroom : (
+        [ ] Github Classroom : (
             Repositories,
             Notifications
         )
@@ -39,11 +39,9 @@ USI Calendar: [
 
 /// Implications
 
-iCorsi Deadlines => USI Email
-iCorsi Deadlines => iCorsi User Id
+iCorsi Deadlines => iCorsi Integration
 
-Course Documents => USI Email
-Course Documents => iCorsi User Id
+Course Documents => iCorsi Integration
 
-Repositories => GitHub Auth
-Notifications => GitHub Auth
+Repositories => Github Auth
+Notifications => Github Webhooks

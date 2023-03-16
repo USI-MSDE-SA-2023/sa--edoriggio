@@ -399,6 +399,8 @@ Exceed: >1 User and >1 Dependency, with both incoming and outgoing dependencies
 
 }
 
+![](./schemas/context.puml)
+
 
 
 # Ex - Component Model: Top-Down
