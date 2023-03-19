@@ -511,11 +511,193 @@ Exceed: >6 components (>1 decomposed) and >2 use case/process view
 
 ## Logical View
 
+```puml
+@startuml
+skinparam componentStyle rectangle
+
+!include <tupadr3/font-awesome/database>
+
+title USI Calendar
+
+
+''' COMPONENTS
+[User Interface] as UI
+[URL Database <$database{scale=0.33}>] as UDB
+[iCorsi Connector] as ICC
+[Github Connector] as GHC
+[Notification System] as NS
+
+component "Calendar Exporter" {
+    [Calendar Exporter] as CEX
+    [URL Generator] as UG
+    [ICS Generator] as IG
+    [Courses Extractor] as CE
+    [Links Repository] as LR
+    
+    CE -(0- LR
+    UG -(0- CE
+    IG -(0- CE
+    CEX -(0- IG
+    CEX -(0- UG
+}
+
+component "Classroom" {
+    [Classroom] as CLA
+    [Chatroom] as CHT
+    [Document Repository] as DR
+    [Github Classroom] as GHCL
+    
+    CLA -(0- CHT
+    CLA -(0-- DR
+    CLA -(0- GHCL
+}
+
+''' INTERFACES
+interface " " as CEXI
+interface " " as NSI
+interface " " as GHCI
+interface " " as CLAI
+interface " " as UDBI
+interface " " as ICCI
+
+
+''' CONNECTIONS
+CEX - CEXI
+NSI -- NS
+GHCI -- GHC
+CLAI -- CLA
+UDB -- UDBI
+ICC -- ICCI
+
+CEXI )- UDB
+UI --( NSI
+NS --( GHCI
+NSI )- CLA
+UI --( CLAI
+UDBI )-- UI
+CLA ---( GHCI
+ICCI )-- CLA
+
+
+skinparam monochrome true
+skinparam shadowing false
+skinparam defaultFontName Courier
+@enduml
+```
 
 ## Process Views
 
-Use Case: 
+### Use Case #1:
 
+```puml
+@startuml
+title Request for a URL with iCorsi Deadlines is not Present in the Database
+
+
+''' PARTICIPANTS
+participant "User Interface" as UI
+participant "iCorsi Connector" as ICC
+participant "Github Connector" as GHC
+participant "Classroom" as CL
+participant "Calendar Exporter" as CE
+participant "URL Database" as UDB
+participant "Notification System" as NS
+
+
+''' CONNECTIONS
+UI -> UDB: Request URL
+UDB -> CE: Create URL
+CE -> ICC: Request Deadlines URL
+ICC -> CE: Return Deadlines URL
+CE -> UDB: Save URL
+UDB -> UI: Display URL
+
+
+skinparam monochrome true
+skinparam shadowing false
+skinparam defaultFontName Courier
+@enduml
+```
+
+```puml
+@startuml
+title Request for a URL is Present in the Database
+
+
+''' PARTICIPANTS
+participant "User Interface" as UI
+participant "iCorsi Connector" as ICC
+participant "Github Connector" as GHC
+participant "Classroom" as CL
+participant "Calendar Exporter" as CE
+participant "URL Database" as UDB
+participant "Notification System" as NS
+
+
+''' CONNECTIONS
+UI -> UDB: Request URL
+UDB -> UI: Display URL
+
+
+skinparam monochrome true
+skinparam shadowing false
+skinparam defaultFontName Courier
+@enduml
+```
+
+### Use Case #2:
+
+```puml
+@startuml
+title Triggered Webhook Matching User-Defined Filters from a Github Repository
+
+
+''' PARTICIPANTS
+participant "User Interface" as UI
+participant "iCorsi Connector" as ICC
+participant "Github Connector" as GHC
+participant "Classroom" as CL
+participant "Calendar Exporter" as CE
+participant "URL Database" as UDB
+participant "Notification System" as NS
+
+
+''' CONNECTIONS
+GHC -> CL: Check Webhook
+CL -> NS: Generate Notification
+NS -> UI: Display Notification
+
+
+skinparam monochrome true
+skinparam shadowing false
+skinparam defaultFontName Courier
+@enduml
+```
+
+```puml
+@startuml
+title Triggered Webhook not Matching User-Defined Filters from a Github Repository
+
+
+''' PARTICIPANTS
+participant "User Interface" as UI
+participant "iCorsi Connector" as ICC
+participant "Github Connector" as GHC
+participant "Classroom" as CL
+participant "Calendar Exporter" as CE
+participant "URL Database" as UDB
+participant "Notification System" as NS
+
+
+''' CONNECTIONS
+GHC -> CL: Check Webhook
+
+
+skinparam monochrome true
+skinparam shadowing false
+skinparam defaultFontName Courier
+@enduml
+```
 
 
 # Ex - Component Model: Bottom-Up
