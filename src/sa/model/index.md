@@ -699,7 +699,6 @@ skinparam defaultFontName Courier
 @enduml
 ```
 
-
 # Ex - Component Model: Bottom-Up
 
 {.instructions
@@ -719,6 +718,185 @@ Good: Existing design with at least 3 reused components (1 Logical View, 1 Proce
 Exceed: Redesign based on >3 reused components (1 Logical View, >1 Process View, >1 ADR)
 
 }
+
+## Logical View
+
+```puml
+@startuml
+skinparam componentStyle rectangle
+
+!include <tupadr3/font-awesome/database>
+
+title USI Calendar
+
+
+''' COMPONENTS
+[User Interface] as UI
+[URL Database <$database{scale=0.33}>] as UDB #8fffff
+[URL Middleman] as UMM
+[iCorsi API] as ICC #8fffff
+[Github API] as GHC #8fffff
+[Notification System] as NS
+
+component "Calendar Exporter" {
+    [golang-ical] as GOIC #8fffff
+    [Courses Extractor] as CE
+    [Links Repository] as LR
+    
+    CE -(0- LR
+    GOIC -(0- CE
+}
+
+component "Classroom" {
+    [Classroom] as CLA
+    [Chatroom] as CHT #8fffff
+    [Document Repository] as DR
+    [Github Classroom] as GHCL
+    [API Manager] as APIM
+    
+    CLA -(0- CHT
+    CLA -(0-- DR
+    CLA -(0- GHCL
+    DR -(0- APIM
+    GHCL -(0- APIM
+}
+
+''' INTERFACES
+interface " " as CEXI
+interface " " as UMMI
+interface " " as NSI
+interface " " as GHCI
+interface " " as CLAI
+interface " " as UDBI
+interface " " as ICCI
+
+
+''' CONNECTIONS
+GOIC - CEXI
+UMM -- UMMI
+NSI -- NS
+ICCI -- ICC
+GHCI -- GHC
+CLAI -- CLA
+UDBI - UDB
+
+CEXI )- UMM
+UMM -( UDBI
+UMMI )-- UI
+UI --( NSI
+NS --( GHCI
+UI --( CLAI
+ICCI )-- APIM
+GHCI )-- APIM
+UMM ---( ICCI
+
+
+skinparam monochrome true
+skinparam shadowing false
+skinparam defaultFontName Courier
+@enduml
+```
+
+## Process Views
+
+### Use Case #1:
+
+```puml
+@startuml
+title Request for a URL with iCorsi Deadlines is not Present in the Database
+
+!include <tupadr3/font-awesome/database>
+
+''' PARTICIPANTS
+participant "User Interface" as UI
+participant "URL Middleman" as UMM
+
+box "Calendar Exporter" #afffff
+participant "golang-ical" as GLI
+participant "Courses Extractor" as UEX
+participant "Links Repository" as LRE
+end box
+
+participant "URL Database <$database{scale=0.33}>" as UDB
+participant "iCorsi API" as ICA
+
+
+''' CONNECTIONS
+UI -> UMM: Request URL
+activate UMM
+UMM -> UDB: Request URL
+UMM -> GLI: Create ICS
+activate GLI
+GLI -> UEX: Request Courses
+activate UEX
+UEX -> LRE: Request Link
+activate LRE
+LRE -> UEX: Return Link
+deactivate LRE
+UEX -> GLI: Return Courses
+deactivate UEX
+GLI -> UMM: Return ICS
+deactivate GLI
+UMM -> ICA: Request URL
+activate ICA
+ICA -> UMM: Return URL
+deactivate ICA
+UMM -> UDB: Save URL
+UMM -> UI: Display URL
+deactivate UMM
+
+
+skinparam monochrome true
+skinparam shadowing false
+skinparam defaultFontName Courier
+@enduml
+```
+
+### Use Case #2:
+
+```puml
+@startuml
+title Request for Github Repositories of a Classroom
+
+''' PARTICIPANTS
+participant "User Interface" as UI
+
+box "Classroom" #afffff
+participant "Classroom" as CLS
+participant "Github Classroom" as GHC
+participant "API Manager" as AMA
+end box
+
+participant "Github API" as GHA
+
+
+''' CONNECTIONS
+UI -> CLS: Request Links
+activate CLS
+CLS -> GHC: Request Github
+activate GHC
+GHC -> AMA: Delegate to Manager
+activate AMA
+AMA -> GHA: Request Links
+activate GHA
+GHA -> AMA: Return Links
+deactivate GHA
+AMA -> GHC: Return Links
+deactivate AMA
+GHC -> CLS: Return Links
+deactivate GHC
+CLS -> UI: Display Links
+deactivate CLS
+
+
+skinparam monochrome true
+skinparam shadowing false
+skinparam defaultFontName Courier
+@enduml
+```
+
+![](./decisions/decision_4.madr)
+![](./decisions/decision_5.madr)
 
 
 

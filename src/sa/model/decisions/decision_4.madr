@@ -1,0 +1,34 @@
+## ADR #1 (Choosing Database Service)
+
+1. What did you decide?
+
+USI Calendar will use MongoDB Atlas Serverless as the database module.
+
+2. What was the context for your decision?
+
+For the database module of USI Calendar, we need something that is bare-bone but still offers security and backup
+features. Since the traffic is not that frequent, a pay as you go service would be the best.
+
+3. What is the problem you are trying to solve?
+
+What is the best database service to use for USI Calendar?
+
+4.  Which alternative options did you consider?
+
+ * Serverless - $0.10/Million Reads and $1.00/Million Writes
+ * Dedicated Server - From $0.20/h
+ * Hosting it locally - Free
+
+5. Which one did you choose?
+
+I chose the first option: Serverless
+
+6. What is the main reason for that?
+
+The following are the consequences of this decision:
+ + Very competitive price
+ + Pay-as-you-go pricing plan
+ + It has a max of 1TB of storage for $0.25/GB-month
+ + It has always-on security and backups
+
+ - Does not have a server connected to it where to host the backend
