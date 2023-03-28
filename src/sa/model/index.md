@@ -737,14 +737,13 @@ title USI Calendar
 [iCorsi API] as ICC #8fffff
 [Github API] as GHC #8fffff
 [Notification System] as NS
+[golang-ical] as GOIC #8fffff
 
-component "Calendar Exporter" {
-    [golang-ical] as GOIC #8fffff
+component "Courses Exporter" {
     [Courses Extractor] as CE
     [Links Repository] as LR
     
     CE -(0- LR
-    GOIC -(0- CE
 }
 
 component "Classroom" {
@@ -763,6 +762,7 @@ component "Classroom" {
 
 ''' INTERFACES
 interface " " as CEXI
+interface " " as GOICI
 interface " " as UMMI
 interface " " as NSI
 interface " " as GHCI
@@ -772,7 +772,8 @@ interface " " as ICCI
 
 
 ''' CONNECTIONS
-GOIC - CEXI
+CE - CEXI
+GOIC -- GOICI
 UMM -- UMMI
 NSI -- NS
 ICCI -- ICC
@@ -781,6 +782,7 @@ CLAI -- CLA
 UDBI - UDB
 
 CEXI )- UMM
+GOICI )-- UMM
 UMM -( UDBI
 UMMI )-- UI
 UI --( NSI
@@ -797,6 +799,17 @@ skinparam defaultFontName Courier
 @enduml
 ```
 
+### External Components:
+**golang-ical**: https://github.com/JacopoD/golang-ical
+
+**URL Database**: https://www.mongodb.com/atlas/database
+
+**Chatroom**: https://minnit.chat/
+
+**iCorsi API**: https://moodledev.io/docs/apis
+
+**Github API**: https://docs.github.com/en/rest?apiVersion=2022-11-28
+
 ## Process Views
 
 ### Use Case #1:
@@ -810,9 +823,9 @@ title Request for a URL with iCorsi Deadlines is not Present in the Database
 ''' PARTICIPANTS
 participant "User Interface" as UI
 participant "URL Middleman" as UMM
-
-box "Calendar Exporter" #afffff
 participant "golang-ical" as GLI
+
+box "Courses Exporter" #afffff
 participant "Courses Extractor" as UEX
 participant "Links Repository" as LRE
 end box
@@ -825,16 +838,16 @@ participant "iCorsi API" as ICA
 UI -> UMM: Request URL
 activate UMM
 UMM -> UDB: Request URL
-UMM -> GLI: Create ICS
-activate GLI
-GLI -> UEX: Request Courses
+UMM -> UEX: Request Courses
 activate UEX
 UEX -> LRE: Request Link
 activate LRE
 LRE -> UEX: Return Link
 deactivate LRE
-UEX -> GLI: Return Courses
+UEX -> UMM: Return Courses
 deactivate UEX
+UMM -> GLI: Create ICS
+activate GLI
 GLI -> UMM: Return ICS
 deactivate GLI
 UMM -> ICA: Request URL
