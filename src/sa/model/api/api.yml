@@ -1,0 +1,123 @@
+swagger: "2.0"
+schemes:
+  - https
+host: api.usicalendar.me
+basePath: /v1
+info:
+  title: USI Calendar
+  version: 1.0.0
+paths:
+  /shorten:
+    get:
+      description: Create the shortened link
+      parameters:
+        - description: The URL of the calendar on USI's website
+          in: query
+          name: url
+          required: true
+          type: string
+        - description: The name of the courses (divided by ~) to extract
+          in: query
+          name: courses
+          required: true
+          type: string
+      responses:
+        "200":
+          description: The shortened URL
+        "400":
+          description: A validation error occurred
+  /urls/{url}:
+    get:
+      description: Get the calendar from the URL
+      parameters:
+        - description: The URL of the calendar
+          in: path
+          name: url
+          required: true
+          type: string
+      responses:
+        "200":
+          description: The ICS file data
+        "404":
+          description: The URL does not exist
+  /courses:
+    get:
+      description: Get the courses of a calendar from USI's website
+      parameters:
+        - description: The URL of the calendar on USI's website
+          in: query
+          name: url
+          required: true
+          type: string
+      responses:
+        "200":
+          description: The list of coourses
+        "400":
+          description: A validation error occurred
+  /icorsi-cal:
+    get:
+      description: Get the calendar for the authenticated user
+      parameters:
+        - description: The email the user used in iCorsi
+          in: query
+          name: email
+          required: true
+          type: string
+        - description: The user's iCorsi token
+          in: query
+          name: token
+          required: true
+          type: string
+      responses:
+        "200":
+          description: The iCorsi ICS file data
+        "400":
+          description: A validation error occurred
+  /{class_id}:
+    get:
+      description: View a specific class
+      parameters:
+        - description: The id of the classroom
+          in: path
+          name: class_id
+          required: true
+          type: string
+      responses:
+        "200":
+          description: View page
+  /{class_id}/chatroom:
+    get:
+      description: View a specific class
+      parameters:
+        - description: The id of the classroom
+          in: path
+          name: class_id
+          required: true
+          type: string
+      responses:
+        "200":
+          description: View page
+  /{class_id}/documents:
+    get:
+      description: View a specific class
+      parameters:
+        - description: The id of the classroom
+          in: path
+          name: class_id
+          required: true
+          type: string
+      responses:
+        "200":
+          description: View page
+  /{class_id}/github_class:
+    get:
+      description: View a specific class
+      parameters:
+        - description: The id of the classroom
+          in: path
+          name: class_id
+          required: true
+          type: string
+      responses:
+        "200":
+          description: View page

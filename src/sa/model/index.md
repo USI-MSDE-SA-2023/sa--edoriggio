@@ -941,7 +941,163 @@ Exceed: Also, document the Web API using the OpenAPI language. You can use the [
 
 }
 
+## Interface Specification
 
+```puml
+@startuml
+skinparam componentStyle rectangle
+
+!include <tupadr3/font-awesome/database>
+
+title USI Calendar
+
+
+''' COMPONENTS
+[User Interface] as UI
+[URL Database <$database{scale=0.33}>] as UDB #8fffff
+[URL Middleman] as UMM
+[iCorsi API] as ICC #8fffff
+[Github API] as GHC #8fffff
+[Notification System] as NS
+[golang-ical] as GOIC #8fffff
+
+component "Courses Exporter" {
+    [Courses Extractor] as CE
+    [Links Repository] as LR
+    
+    CE -(0- LR
+}
+
+component "Classroom" {
+    [Classroom] as CLA
+    [Chatroom] as CHT #8fffff
+    [Document Repository] as DR
+    [Github Classroom] as GHCL
+    [API Manager] as APIM
+    
+    CLA -(0- CHT
+    CLA -(0-- DR
+    CLA -(0- GHCL
+    DR -(0- APIM
+    GHCL -(0- APIM
+}
+
+''' INTERFACES
+interface " " as CEXI
+interface " " as GOICI
+interface " " as UMMI
+interface " " as NSI
+interface " " as GHCI
+interface " " as CLAI
+interface " " as UDBI
+interface " " as ICCI
+
+
+''' CONNECTIONS
+CE - CEXI
+GOIC -- GOICI
+UMM -- UMMI
+NSI -- NS
+ICCI - ICC
+GHC - GHCI
+CLAI -- CLA
+UDBI - UDB
+
+CEXI )- UMM
+GOICI )-- UMM
+UMM -( UDBI
+UMMI )-- UI
+UI --( NSI
+NS --( GHCI
+UI --( CLAI
+ICCI )-- APIM
+GHCI )-- APIM
+UMM ----( ICCI
+
+
+''' NOTES
+note right of GOICI
+operation:
+..
+parseCalendar(calendar)
+end note
+
+note bottom of UDBI
+operations:
+..
+collection(name)
+findOne(query, filter)
+insertOne(document)
+deleteMany(filter)
+end note
+
+note top of CEXI
+operation:
+..
+extractCoursesURLs()
+end note
+
+note left of UMMI
+api endpoints:
+..
+GET /shorten
+GET /urls/{link}
+GET /courses
+GET /icorsi-cal
+end note
+
+note left of CLAI
+api endpoints:
+..
+GET /{class_id}
+GET /{class_id}/chatroom
+GET /{class_id}/documents
+GET /{class_id}/github
+end note
+
+note bottom of ICCI
+api endpoints:
+..
+GET ①wsfunction=core_user_get_users_by_field
+GET ①wsfunction=core_calendar_get_calendar_export_token
+GET ①wsfunction=core_course_get_contents
+GET ②calendar/export_execute.php
+--
+① https://www.icorsi.ch/webservice/rest/server.php?
+② https://www.icorsi.ch/calendar/
+end note
+
+note bottom of GHCI
+api endpoints:
+..
+GET ①login/oauth/access_token
+GET ①login/oauth/authorize
+GET ①repos/{owner}/{repo}/commits
+--
+① https://github.com/
+end note
+
+note left of NSI
+events:
+..
+repo_created
+commit_pushed
+issue_created
+issue_assigned
+--
+property:
+..
+commit_name_filter
+end note
+
+
+skinparam monochrome true
+skinparam shadowing false
+skinparam defaultFontName Courier
+@enduml
+```
+
+![](./api/api.png)
 
 # Ex - Connector View
 
