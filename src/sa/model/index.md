@@ -1097,7 +1097,11 @@ skinparam defaultFontName Courier
 @enduml
 ```
 
+## OpenAPI Specification
+
 ![](./api/api.png)
+
+[//]: # (Scheduler primitives: wait, perform)
 
 # Ex - Connector View
 
@@ -1119,6 +1123,8 @@ Exceed: introduce a new type of connector and update your existing process view
 (sequence diagram) to show the connector primitives in action
 
 }
+
+![](./schemas/connector-view.c5)
 
 
 

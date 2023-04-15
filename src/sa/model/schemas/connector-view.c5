@@ -1,0 +1,27 @@
+"Courses Extractor" -call-> "Links Repository"
+"Courses Extractor" -call-> "URL Middleman"
+"URL Middleman" -> db DB
+"Garbage Collector" -> scheduler -> "URL Middleman"
+
+"golang-ical" -call-> "URL Middleman"
+
+
+"Notification System" -stream-> "User Interface"
+
+"User Interface" -> web External -> "URL Middleman"
+"User Interface" -> web External -> "Classroom"
+
+
+"Classroom" -> web Internal -> "Chatroom"
+web Internal -> "Document Repository"
+web Internal -> "Github Classroom"
+
+
+"API Manager" -> ram Shared -> "Document Repository"
+"API Manager" -> ram Shared -> "Github Classroom"
+
+"Github API" -> bus Github -> "API Manager"
+"Github API" -> bus Github -> "Notification System"
+
+"iCorsi API" -> bus iCorsi -> "API Manager"
+"iCorsi API" -> bus iCorsi -> "URL Middleman"

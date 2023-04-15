@@ -109,7 +109,7 @@ paths:
       responses:
         "200":
           description: View page
-  /{class_id}/github_class:
+  /{class_id}/github-class:
     get:
       description: View a specific class
       parameters:
