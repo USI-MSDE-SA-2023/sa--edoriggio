@@ -17,11 +17,11 @@ web Internal -> "Document Repository"
 web Internal -> "Github Classroom"
 
 
-"API Manager" -> ram Shared -> "Document Repository"
-"API Manager" -> ram Shared -> "Github Classroom"
+"API Manager" -call-> "Document Repository"
+"API Manager" -call-> "Github Classroom"
 
-"Github API" -> bus Github -> "API Manager"
-"Github API" -> bus Github -> "Notification System"
+"Github API" -call-> "API Manager"
+"Github API" -> bus WebHooks -> "Notification System"
 
-"iCorsi API" -> bus iCorsi -> "API Manager"
-"iCorsi API" -> bus iCorsi -> "URL Middleman"
+"iCorsi API" -call-> "API Manager"
+"iCorsi API" -call-> "URL Middleman"

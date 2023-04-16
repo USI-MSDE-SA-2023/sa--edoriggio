@@ -1,0 +1,30 @@
+## ADR #6 (Choice of Connector)
+
+1. What did you decide?
+
+A Stream connector is used to connect the Notification System component and the User Interface component.
+
+2. What was the context for your decision?
+
+Notifications need to be pushed from the Notification System component to the user interface. This needs to be done in
+such a way that a notification is displayed at a time.
+
+3. What is the problem you are trying to solve?
+
+What is the best connector to use between the Notification System and the User Interface?
+
+4.  Which alternative options did you consider?
+
+* Stream Connector
+* Message Bus
+
+5. Which one did you choose?
+
+I chose the first option: Stream Connector
+
+6. What is the main reason for that?
+
+The following are the consequences of this decision:
++ 1-1 Cardinality
++ Asynchronous
++ Transfers only data

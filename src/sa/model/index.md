@@ -1101,7 +1101,7 @@ skinparam defaultFontName Courier
 
 ![](./api/api.png)
 
-[//]: # (Scheduler primitives: wait, perform)
+
 
 # Ex - Connector View
 
@@ -1124,7 +1124,38 @@ Exceed: introduce a new type of connector and update your existing process view
 
 }
 
+## Connector View
+
 ![](./schemas/connector-view.c5)
+
+## Process View
+
+```puml
+@startuml
+title Run the Garbage Collector once and delete the URL named URL_x
+
+''' PARTICIPANTS
+participant "Database" as DB
+participant "URL Middleman" as UMM
+participant "Job Scheduler" as JS
+participant "Garbage Collector" as GC
+
+
+''' CONNECTIONS
+JS -> GC: wait(1 week)
+JS -> GC: start
+GC -> JS: perform(clean)
+JS -> UMM: perform(clean)
+UMM -> DB: delete(URL_x)
+
+
+skinparam monochrome true
+skinparam shadowing false
+skinparam defaultFontName Courier
+@enduml
+```
+
+![](./decisions/decision_6.madr)
 
 
 
