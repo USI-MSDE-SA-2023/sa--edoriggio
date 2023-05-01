@@ -1142,9 +1142,7 @@ participant "Garbage Collector" as GC
 
 
 ''' CONNECTIONS
-JS -> GC: wait(1 week)
-JS -> GC: start
-GC -> JS: perform(clean)
+GC -> JS: schedule(1 week, clean)
 JS -> UMM: perform(clean)
 UMM -> DB: delete(URL_x)
 
@@ -1196,6 +1194,128 @@ Whenever you have a connector you couple together the components and different c
 
 }
 
+## Logical View
+
+```puml
+@startuml
+skinparam componentStyle rectangle
+
+!include <tupadr3/font-awesome/database>
+
+title USI Calendar
+
+
+''' COMPONENTS
+[User Interface] as UI
+[URL Database <$database{scale=0.33}>] as UDB
+[URL Middleman] as UMM
+[Notification System] as NS
+
+component "golang-ical Wrapper" #8fffff {
+    [golang-ical] as GOIC
+    [golang-ical Adapter] as GOICA
+    
+    GOIC -0)- GOICA
+}
+
+component "Courses Exporter" {
+    [Courses Extractor] as CE
+    [Links Repository] as LR
+    
+    CE -(0- LR
+}
+
+component "Classroom" {
+    [Classroom] as CLA
+    [Chatroom] as CHT
+    [Document Repository] as DR
+    [Github Classroom] as GHCL
+    [Collector] as COLL
+    
+    CLA -(0- CHT
+    CLA -(0-- DR
+    CLA -(0- GHCL
+    DR -(0- COLL
+    GHCL -(0- COLL
+}
+
+component "GH/iC Wrapper" #8fffff {
+    [iCorsi API] as ICC
+    [Github API] as GHC
+    [GH/iC Manager] as APIM
+    [GH/iC Adapter] as APIA
+    
+    APIM -(0- GHC
+    APIM -(0- ICC
+    APIA -(0- APIM
+}
+
+
+''' INTERFACES
+interface " " as CEXI
+interface " " as GOICI
+interface " " as UMMI
+interface " " as NSI
+interface " " as CLAI
+interface " " as UDBI
+interface " " as GIAA
+
+
+''' CONNECTIONS
+CE - CEXI
+GOICA -- GOICI
+UMM -- UMMI
+NSI -- NS
+CLAI -- CLA
+UDBI - UDB
+GIAA -- APIA
+
+CEXI )- UMM
+GOICI )-- UMM
+UMM -( UDBI
+UMMI )-- UI
+UI --( NSI
+NS --( GIAA
+UI --( CLAI
+UMM ---( GIAA
+COLL --( GIAA
+
+
+skinparam monochrome true
+skinparam shadowing false
+skinparam defaultFontName Courier
+@enduml
+```
+
+## Tasks
+1. The two components that are acting as adapters are the _URL Middleman_ and the _API Manager_.
+2. In the case of the _golang-ical Adapter_ , it is using the API provided by _golang-ical_ and creating ad-hoc methods to aggregate multiple ical URLs to form a single calendar. In the case of the _GH/iC Adapter_, it is used to uniform the data received by the iCorsi and GitHub APIs.
+3. The two wrappers are highlighted in the above logical view.
+4. In the case of the _golang-ical Wrapper_, it would need to use the **Internet Calendaring and Scheduling Core Object Specification
+   (iCalendar)** ([RFC-2445](https://www.ietf.org/rfc/rfc2445.txt)). In the case of the _GH/iC Wrapper_, however, I would use an ad-hoc standard to normalize the data returned by both iCorsi and GitHub.
+5. In my case I can distinguish two different types of coupling, one regarding the components based on the HTTP Protocol, and the other regarding the components connected based on the iCalendar specification. In the case of the components connected through the HTTP Protocol -- i.e., all the frontend components and the respective backend components -- we can say that such components are loosely coupled. In the case of the components connected based on the iCalendar specification, we can say that the components -- i.e., the _golang-ical Adapter_ and _golang-ical_ are tightly coupled.
+6. Let's see the pseudocode for the two cases:
+
+```golang
+// golang-ical Adapter
+// Here we are in the URL Middleman
+var baseIcalUrl string = "https://search.usi.ch/[...]"
+var coursesURLs *[]string = mongo.GetCoursesURLs()
+
+icals := icalAdapter.ConvertToIcals(&coursesURLs)
+aggIcal := icalAdapter.Aggregate(&baseIcalUrl, &icals)
+
+
+// GH/iC Adapter
+// Here we are in one of the components that makes use of Github/iCorsi data
+iCorsiData := ghicManager.GetiCorsiData("courses")
+githubData := ghicManager.GetGithubData("user")
+
+cleanDataiCorsi := ghicAdapter.Convert(&iCorsiData)
+cleanDataGithub := ghicAdapter.Convert(&githubData)
+```
+
+7. Coupling has been minimized with the introduction of the _golang-ical Wrapper_. The logical view can be found at the beginning of this exercise.
 
 
 # Ex - Physical and Deployment Views
