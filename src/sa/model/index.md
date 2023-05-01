@@ -1298,7 +1298,7 @@ skinparam defaultFontName Courier
 
 ```golang
 // golang-ical Adapter
-// Here we are in the URL Middleman
+// Here we are in the URL Middleman component
 var baseIcalUrl string = "https://search.usi.ch/[...]"
 var coursesURLs *[]string = mongo.GetCoursesURLs()
 
