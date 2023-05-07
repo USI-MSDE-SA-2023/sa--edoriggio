@@ -5,7 +5,7 @@ on:
       - main
 jobs:
   build-and-deploy-gh-pages:
-    reuns-on: ubuntu-latest
+    runs-on: ubuntu-latest
     steps:
       - name: Checkout Branch
         uses: actions/checkout@v3
