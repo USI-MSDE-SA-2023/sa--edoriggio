@@ -270,6 +270,8 @@ footer {
 <a class="d2" href="#logical-view">Logical View</a>
 <a class="d2" href="#tasks">Tasks</a>
 <a class="d1" href="#ex---physical-and-deployment-views"><span class='task'>11.</span>  Physical and Deployment Views</a>
+<a class="d2" href="#container-view">Container View</a>
+<a class="d2" href="#deployment-view">Deployment View</a>
 <a class="d1" href="#ex---availability-and-services"><span class='task'>12.</span>  Availability and Services</a>
 <a class="d1" href="#ex---flexibility"><span class='task'>13.</span>  Flexibility</a>
 
@@ -725,7 +727,10 @@ cleanDataGithub := ghicAdapter.Convert(&amp;githubData)
 <li>configure a GitHub webhook to be called whenever you push changes to your documentation</li>
 <li>setup a GitHub action (or similar) to build and publish your documentation on a website</li>
 </ul>
-<section class="pass"><span>&starf;&star;&star;: </span>1 physical view, 1 deployment view, 1 ADR (b.)</section><section class="ok"><span>&starf;&starf;&star;: </span>&gt;1 physical view, &gt;1 deployment view, 1 ADR (b.)</section><section class="exceed"><span>&starf;&starf;&starf;: </span>1 physical view, 1 deployment view, 1 ADR (b.) + 1 demo (c.)</section></section><h1 id="ex---availability-and-services"><span class='task'>12.</span>  Availability and Services</h1>
+<section class="pass"><span>&starf;&star;&star;: </span>1 physical view, 1 deployment view, 1 ADR (b.)</section><section class="ok"><span>&starf;&starf;&star;: </span>&gt;1 physical view, &gt;1 deployment view, 1 ADR (b.)</section><section class="exceed"><span>&starf;&starf;&starf;: </span>1 physical view, 1 deployment view, 1 ADR (b.) + 1 demo (c.)</section></section><h2 id="container-view">Container View</h2>
+<p><img src="./puml_5.svg" alt=""></p>
+<h2 id="deployment-view">Deployment View</h2>
+<img src="./puml_e22.svg"><h1 id="ex---availability-and-services"><span class='task'>12.</span>  Availability and Services</h1>
 <section class="instructions "><p>The goal of this week is to plan how to deliver your software as a service with high availability.</p>
 <ol>
 <li>If necessary, change your deployment design so that your software is hosted on a server (which could be running as a Cloud VM). Your SaaS architecture should show how your SaaS can be remotely accessed from a client such as a Web browser, or a mobile app</li>
@@ -756,7 +761,7 @@ cleanDataGithub := ghicAdapter.Convert(&amp;githubData)
 
 
 <footer>
-    5/7/2023, 7:18:28 PM
+    5/7/2023, 7:25:44 PM
 </footer>
 
 </body>
