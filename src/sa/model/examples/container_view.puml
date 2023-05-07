@@ -1,0 +1,22 @@
+@startuml
+!include <C4/C4_Container>
+
+Person(user_s, "User", "")
+
+System_Boundary(boundary, "USI Calendar") {
+    Container(frontend, "Web Application", "Vue.js")
+    Container(backend, "Backend", "Golang")
+    ContainerDb(database, "Database", "MongoDB")
+}
+
+System_Ext(calendar, "Calendar Service")
+System_Ext(icorsi, "iCorsi API")
+System_Ext(github, "Github API")
+
+Rel(user_s, frontend, "Request Calendars")
+Rel(frontend, backend, "HTTP")
+Rel(backend, database, "Reads/Writes")
+Rel(backend, calendar, " ")
+Rel(backend, github, " ")
+Rel(backend, icorsi, " ")
+@enduml

@@ -1347,6 +1347,59 @@ Exceed: 1 physical view, 1 deployment view, 1 ADR (b.) + 1 demo (c.)
 
 }
 
+## Container View
+
+![](./examples/container_view.puml)
+
+## Deployment View
+
+```puml
+@startuml
+node "Frontend" {
+    [Web Application] as WAPP
+    [Notification System] as NS
+    
+    WAPP -- NS
+}
+
+database "Database" {
+    [Shortened URLs] as URLS
+}
+
+node "Backend" {
+    [URL Middleman] as URL
+    [golang-ical] as ICAL
+    
+    component "Courses Extractor" {
+        [Extractor] as EXT
+        [Links Repository] as REPO
+        
+        REPO -- EXT
+    }
+    
+    component "API Manager" {
+        [API Manager] as API
+        [iCorsi API] as ICAPI
+        [Github API] as GHAPI
+        
+        API -- ICAPI
+        API -- GHAPI
+    }
+    
+    URL -- API
+    ICAL -- URL
+    EXT -- URL
+    URLS -- URL
+}
+
+WAPP -- URL : "HTTPS"
+
+skinparam monochrome true
+skinparam shadowing false
+skinparam defaultFontName Courier
+@enduml
+```
+
 
 
 # Ex - Availability and Services
