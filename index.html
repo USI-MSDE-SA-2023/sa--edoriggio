@@ -1,0 +1,764 @@
+<html>
+
+<head>
+    <title>Edoardo Riggio - USI Calendar</title>
+    <link rel="stylesheet" type="text/css" href="https://fonts.googleapis.com/css?family=Fira+Sans|Fira+Mono">
+    <link rel="stylesheet" type="text/css" href="//cdn.jsdelivr.net/gh/highlightjs/cdn-release@10.2.0/build/styles/default.min.css">
+    <style>
+        body,
+        * {
+            font-family: "Fira Sans";
+            scroll-behavior: smooth;
+        }
+
+        body {
+            margin: 1em;
+        }
+
+        #usi-logo {
+            width: 75px;
+            height: 75px;
+        }
+
+        header {
+            display: flex;
+            align-content: space-between;
+            width: 100%;
+            justify-items: center;
+        }
+
+        header ul {
+            list-style: none;
+        }
+
+        header .title {
+            flex: 1;
+            margin-left: 1em;
+        }
+
+        html {
+            min-height: 100vh;
+        }
+
+        pre,
+        code {
+            font-family: "Fira Mono"
+        }
+
+        pre {
+            background: rgb(202, 227, 255);
+            padding: 1em;
+        }
+
+        td {
+            text-align: center
+        }
+
+        td:last-child {
+            text-align: left;
+        }
+
+        th {
+            font-weight: normal;
+            color: rgb(0, 61, 131);
+        }
+
+        thead {
+            border-bottom: 2px solid rgb(202, 227, 255);
+        }
+
+        table {
+            width: 100%
+        }
+
+        span.task {
+            display: inline-flex;
+            border-radius: 50%;
+            border: 1px solid white;
+            background: #ffbc00;
+            width: 2em;
+            height: 2em;
+            justify-content: center;
+            align-items: center;
+            font-weight: normal;
+            margin-top: 2em;
+        }
+
+        section.feedback {
+            padding: 2em;
+            background-color: rgb(92, 192, 223);
+            background-image: linear-gradient(1deg, white, transparent,rgba(255,255,255,0.5) 90%,transparent 100%);
+        }
+
+        section.instructions {
+            padding: 2em;
+            background-color: rgb(255, 241, 196);
+            background-image: linear-gradient(1deg, white, transparent,rgba(255,255,255,0.5) 90%,transparent 100%);
+        }
+
+        section.instructions::before {
+            content: "Task Description";
+            font-size: 1.75em;
+            color: #ffbc00;
+            font-weight: bold;
+            transform: translateY(-2em) rotate(1deg);
+            display: block;
+            margin-bottom: -2em;
+            text-align: center;
+        }
+
+        section.pass, section.exceed, section.ok {
+            margin-top: 1em;
+        }
+
+        section.pass span, section.exceed span, section.hint span, section.ok span {
+            margin-right: 0.5em;
+            padding: 0.5em;
+            display: inline-block;
+        }
+
+        section.pass {
+            border: 2px solid green;
+        }
+
+        section.ok {
+            border: 2px solid rgb(6, 175, 6);
+        }
+
+        section.exceed {
+            border: 2px solid rgb(34, 255, 34);
+        }
+
+        section.hint {
+            border: 2px solid rgb(255, 214, 34);
+        }
+
+        section.pass span {
+            background-color: green; color: white;
+            background-image: linear-gradient(45deg, #000000a6, transparent);
+        }
+
+        section.ok span {
+            background-color: rgb(6, 175, 6); color: white;
+            background-image: linear-gradient(135deg, #000000a6, transparent);
+        }
+
+        section.exceed span {
+            background-color: rgb(34, 255, 34); 
+            background-image: linear-gradient(-45deg, white, transparent);
+        }
+
+        section.hint span {
+            background-color: rgb(255, 214, 34);
+            background-image: linear-gradient(-45deg, white, transparent);
+        }
+
+        .deadline {
+            text-align: right;
+        }
+
+        p.deadline {
+            font-size: 2em;
+        }
+
+        .deadline b {
+            border-bottom: 1px solid black;
+        }
+
+        form label {
+            display: inline-block;
+            margin-right: 1em;
+            vertical-align: middle;
+        }
+
+        blockquote {
+   border-left: 10px solid #fff2ca;
+   padding-left: 2em;
+   margin: 1em;
+}
+
+
+form button {
+    min-width: 10em;
+    min-height: 2em;
+    background: #008d4f;
+    color: white;
+    font-weight: bold;
+    font-size: 1.5em;
+}
+
+form input[type=text],
+form textarea,
+form select {
+    flex: 3;
+    margin: 0.5em;
+	font-size: 1.1em;
+}	
+
+form p { display: flex; 
+	align-items: stretch;
+    min-height: 2.5em;
+    padding-left: 0.5em; 
+flex-direction: column}
+
+nav .task {display: unset; background:white}
+
+nav .d1 {display: block}
+nav .d1 + .d2 {margin-left: 2em}
+nav .d2 {margin-left: 1em}
+
+footer {
+    text-align: center; color: gray;
+}
+
+    </style>
+</head>
+<body>
+
+    <header>    <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" id="usi-logo" x="0px" y="0px" width="200" height="200" viewBox="0 0 200 200" style="enable-background:new 0 0 200 200;" xml:space="preserve" class="injected-svg svg">
+        <g>
+            <path d="M180,41.7h-51.1V31.1h42.2C153.1,12.5,127.8,1,99.9,1C45.2,1.1,0.9,45.4,1,100.1c0,26.8,10.7,51.1,28.1,68.9   c-1.4-2-2.4-4.1-3-6.1c-1-3.5-1-5.9-1.1-15.8v-47.1h14.8v48.5c0,3.4-0.1,6.6,1,9.6c3,7.6,11.3,8.5,16,8.5c2.3,0,8.3-0.1,12.6-3.9   c4.4-3.9,4.4-8.4,4.4-15v-47.7h14.9v49.7c-0.1,8.9-0.1,16.3-8.5,23.5c-8,7-18.4,7.7-23.8,7.7c-4.8,0-9.5-0.6-14-2.1   c-1.8-0.6-3.5-1.4-5-2.3c17.1,14,39,22.4,62.8,22.4c54.7-0.1,99-44.4,98.9-99.1C199,78.1,191.9,58,180,41.7z M175.3,94.4l-6.3-9   c2.1-1.4,8.7-5.7,8.7-17.7c0-2-0.2-4.1-1-6.2c-1.7-4.1-4.6-4.9-6.6-4.9c-3.6,0-4.9,2.5-5.7,4.3c-0.5,1.3-0.6,1.5-1.8,6.6l-1.5,6.9   c-0.9,3.6-1.3,5.4-2,7.2c-1.1,2.6-4.5,9.6-14,9.6c-10.9,0-17.8-9.2-17.8-22.6c0-12.3,6.1-19,11.6-23l6.6,8.8   c-2.8,1.9-8.5,5.7-8.5,14.8c0,5.8,2.6,10.8,7,10.8c4.9,0,5.8-5.3,6.8-10.5l1.3-5.9c1.6-7.7,4.8-18.6,17-18.6   c13.1,0,18.4,12.2,18.4,24.3c0,3.2-0.3,6.7-1.3,10.2C185.1,83.4,182.3,90.1,175.3,94.4z"></path>
+        </g>
+        </svg>
+        <div class="title">
+            <h2>Software Architecture</h2>
+            <h1>USI Calendar</h1>
+        </div>
+        <ul>
+            <li>Edoardo Riggio</li>
+        </ul>
+        </header>
+
+        <nav>
+            <h1>Table of Contents</h1>
+            <a class="d1" href="#getting-started">Getting started</a>
+<a class="d1" href="#ex---domain-selection"><span class='task'>0.</span>  Domain Selection</a>
+<a class="d1" href="#ex---architectural-decision-records"><span class='task'>1.</span>  Architectural Decision Records</a>
+<a class="d1" href="#ex---quality-attribute-scenario"><span class='task'>2.</span>  Quality Attribute Scenario</a>
+<a class="d2" href="#scenario-1">Scenario #1</a>
+<a class="d2" href="#scenario-2">Scenario #2</a>
+<a class="d2" href="#scenario-3">Scenario #3</a>
+<a class="d2" href="#scenario-4">Scenario #4</a>
+<a class="d2" href="#scenario-5">Scenario #5</a>
+<a class="d2" href="#scenario-6">Scenario #6</a>
+<a class="d2" href="#scenario-7">Scenario #7</a>
+<a class="d1" href="#ex---quality-attribute-tradeoff"><span class='task'>3.</span>  Quality Attribute Tradeoff</a>
+<a class="d2" href="#usability-vs-complexity">Usability vs. Complexity</a>
+<a class="d2" href="#durability-vs-performance">Durability vs. Performance</a>
+<a class="d2" href="#customizability-vs-design-consistency">Customizability vs. Design Consistency</a>
+<a class="d1" href="#ex---feature-modeling"><span class='task'>4.</span>  Feature Modeling</a>
+<a class="d1" href="#ex---context-diagram"><span class='task'>5.</span>  Context Diagram</a>
+<a class="d1" href="#ex---component-model-top-down"><span class='task'>6.</span>  Component Model: Top-Down</a>
+<a class="d2" href="#logical-view">Logical View</a>
+<a class="d2" href="#process-views">Process Views</a>
+<a class="d3" href="#use-case-1">Use Case #1:</a>
+<a class="d3" href="#use-case-2">Use Case #2:</a>
+<a class="d1" href="#ex---component-model-bottom-up"><span class='task'>7.</span>  Component Model: Bottom-Up</a>
+<a class="d2" href="#logical-view">Logical View</a>
+<a class="d3" href="#external-components">External Components:</a>
+<a class="d2" href="#process-views">Process Views</a>
+<a class="d3" href="#use-case-1">Use Case #1:</a>
+<a class="d3" href="#use-case-2">Use Case #2:</a>
+<a class="d1" href="#ex---interfaceapi-specification"><span class='task'>8.</span>  Interface/API Specification</a>
+<a class="d2" href="#interface-specification">Interface Specification</a>
+<a class="d2" href="#openapi-specification">OpenAPI Specification</a>
+<a class="d1" href="#ex---connector-view"><span class='task'>9.</span>  Connector View</a>
+<a class="d2" href="#connector-view">Connector View</a>
+<a class="d2" href="#process-view">Process View</a>
+<a class="d1" href="#ex---adapters-and-coupling"><span class='task'>10.</span>  Adapters and Coupling</a>
+<a class="d2" href="#hints">Hints</a>
+<a class="d2" href="#logical-view">Logical View</a>
+<a class="d2" href="#tasks">Tasks</a>
+<a class="d1" href="#ex---physical-and-deployment-views"><span class='task'>11.</span>  Physical and Deployment Views</a>
+<a class="d1" href="#ex---availability-and-services"><span class='task'>12.</span>  Availability and Services</a>
+<a class="d1" href="#ex---flexibility"><span class='task'>13.</span>  Flexibility</a>
+
+        </nav>
+
+    <main>
+        <h1 id="getting-started">Getting started</h1>
+<p>You will use <a href="https://www.markdownguide.org/cheat-sheetplan">Markdown</a>, <a href="https://plantuml.com/">PlantUML</a>, <a href="https://github.com/adr/madr">architectural decision records</a>, feature models and connector views to describe a software architecture model about your own project.</p>
+<p>This document will grow during the semester as you sketch and refine your software architecture model.</p>
+<p>When you are done with each task, please push so we can give you feedback about your work.</p>
+<p>We begin by selecting a suitable project domain.</p>
+<h1 id="ex---domain-selection"><span class='task'>0.</span>  Domain Selection</h1>
+<section class="instructions"><p>Submit the name and brief description (about 100 words) of your domain using the following vision statement template:</p>
+<pre><code>For [target customers]
+Who [need/opportunity/problem]
+The [name your project]
+Is  [type of project]
+That [major features, core benefits, compelling reason to buy]
+Unlike [current reality or competitors]
+Our Project [summarize main advantages over status quo, unique selling point]
+</code></pre>
+<p>Please indicate if your choice is:</p>
+<ul>
+<li>a project you have worked on in the past (by yourself or with a team)</li>
+<li>a project you are going to work on this semester in another lecture (which one?)</li>
+<li>a new project you plan to build in the future</li>
+<li>some existing open source project you are interested to contribute to</li>
+</ul>
+<p>The chosen domain should be unique for each student.</p>
+<p>Please be ready to give a 2 minute presentation about it (you can use one slide but it&#39;s not necessary)</p>
+<section class="hint"><span>Hint: </span>to choose a meaningful project look at the rest of the modeling tasks which you are going to perform in the context of your domain.</section></section><p>Project Name: <em>USI Calendar</em></p>
+<p>Project Type: Project I have worked on in the past</p>
+<p>Vision Statement: This project is for USI students and is called USI Calendar. Students can – as of now – download the calendar of the current semester&#39;s courses from USI&#39;s website. The problem with this solution is that it is not possible for students to choose which courses to include in the calendar, and which to exclude. USI Calendar aims at giving the possibility to users to be able to choose and display in their calendar their own courses. Moreover, USI Calendar will create &quot;classrooms&quot; for each course. In these classrooms students will be automatically added based on the courses they chose to include in their calendars.</p>
+<p>Additional Information:</p>
+<h1 id="ex---architectural-decision-records"><span class='task'>1.</span>  Architectural Decision Records</h1>
+<section class="instructions"><p>Software architecture is about making design decisions that will impact the quality of the software you plan to build.</p>
+<p>Let&#39;s practice how to describe an architectural decision. We will keep using ADRs to document architectural decisions in the rest of the model.</p>
+<p>Use the following template to capture one or more architectural design decisions in the context of your project domain</p>
+<section class="pass"><span>&starf;&star;&star;: </span>1 ADR</section><section class="ok"><span>&starf;&starf;&star;: </span>2 ADR</section><section class="exceed"><span>&starf;&starf;&starf;: </span>&gt;2 ADR</section></section><p><h3></h3><h2 id="adr-1-choosing-courses">ADR #1 (Choosing Courses)</h2>
+<ol>
+<li>What did you decide?</li>
+</ol>
+<p>The user is able to select courses from all programs and export the selected courses&#39; schedules as a single calendar.</p>
+<ol start="2">
+<li>What was the context for your decision?</li>
+</ol>
+<p>The goal is to create a system in which students can select the courses they attend. After the courses have been
+selected, the system will generate a URL to the custom calendar containing all the courses&#39; schedules. The URL can
+then be added to the calendar of choice.</p>
+<ol start="3">
+<li>What is the problem you are trying to solve?</li>
+</ol>
+<p>How can students select the courses that they attend in order to create a custom calendar?</p>
+<ol start="4">
+<li>Which alternative options did you consider?</li>
+</ol>
+<ul>
+<li>Making the student select any course from any program and generate the calendar based on those choices;</li>
+<li>Making the student select any course only from one program and generate the calendar based on those choices;</li>
+<li>Making the student select any course from any program/one program, and generate one calendar for each choice.</li>
+</ul>
+<ol start="5">
+<li>Which one did you choose?</li>
+</ol>
+<p>I chose the first option: Making the student select any course from any program and generate the calendar based on
+                          those choices.</p>
+<ol start="6">
+<li>What is the main reason for that?</li>
+</ol>
+<p>The following are the consequences of this decision:</p>
+<ul>
+<li>The student has more flexibility when choosing which courses to subscribe to;</li>
+<li>Only one calendar is generated, no need to create n calendar for n courses;</li>
+<li>The student can also select courses from programs that he is not enrolled in;</li>
+</ul>
+<ul>
+<li>This type of choice is more challenging to display on a UI;</li>
+<li>If the student drops out from one of the courses, he/she needs to generate a new calendar without that course.</li>
+</ul>
+
+<h3></h3><h2 id="adr-2-exporting-assignments-calendar">ADR #2 (Exporting Assignments Calendar)</h2>
+<ol>
+<li>What did you decide?</li>
+</ol>
+<p>Exporting the calendar for the assignments together with the courses&#39; schedule calendar.</p>
+<ol start="2">
+<li>What was the context for your decision?</li>
+</ol>
+<p>The goal is to facilitate the life of the student by including the calendar of the assignments together with the
+calendar of the selected courses&#39; schedules. The assignments&#39; calendar needs to be taken from iCorsi&#39;s API, so the
+process will a bit longer since the user needs to input their iCorsi email and token.</p>
+<ol start="3">
+<li>What is the problem you are trying to solve?</li>
+</ol>
+<p>Should the assignment&#39;s calendar from iCorsi be included in the courses&#39; schedule calendar?</p>
+<ol start="4">
+<li>Which alternative options did you consider?</li>
+</ol>
+<ul>
+<li>Exporting the calendar as another URL to be copied and saved by the student;</li>
+<li>Exporting the calendar together with the schedules calendar;</li>
+<li>Not using this feature because of the API&#39;s restrictions.</li>
+</ul>
+<ol start="5">
+<li>Which one did you choose?</li>
+</ol>
+<p>I chose the second option: Exporting the calendar together with the schedules calendar.</p>
+<ol start="6">
+<li>What is the main reason for that?</li>
+</ol>
+<p>The following are the consequences of this decision:</p>
+<ul>
+<li>The student will only need to copy one URL and deal with one calendar;</li>
+<li>The student will have a synchronized list of all the deadlines for the courses he/she attends;</li>
+</ul>
+<ul>
+<li>It is more tedious for the user to do the initial setup (generate the token + write down the email).</li>
+</ul>
+
+<h3></h3><h2 id="adr-3-adding-users-to-classes">ADR #3 (Adding Users to Classes)</h2>
+<ol>
+<li>What did you decide?</li>
+</ol>
+<p>Students will be automatically added to classrooms based on the courses they are enrolled in iCorsi.</p>
+<ol start="2">
+<li>What was the context for your decision?</li>
+</ol>
+<p>The goal is to facilitate communication between students and access to course material by creating classes in which
+only the enrolled students can enter. Moreover, students could be also automatically added to each classroom thanks to
+the course registration list provided by the iCorsi API.</p>
+<ol start="3">
+<li>What is the problem you are trying to solve?</li>
+</ol>
+<p>Should students be added to the classrooms automatically, and if so, based on which criteria?</p>
+<ol start="4">
+<li>Which alternative options did you consider?</li>
+</ol>
+<ul>
+<li>Users are not automatically added to classrooms, they must select their courses manually;</li>
+<li>Users are automatically added to classes based on the courses they choose when creating the calendar;</li>
+<li>Users are automatically added to classes based on the courses they are enrolled in iCorsi.</li>
+</ul>
+<ol start="5">
+<li>Which one did you choose?</li>
+</ol>
+<p>I chose the third option: Users are added to classes based on the courses they are enrolled in iCorsi.</p>
+<ol start="6">
+<li>What is the main reason for that?</li>
+</ol>
+<p>The following are the consequences of this decision:</p>
+<ul>
+<li>The user does not need to check him/herself which courses they are enrolled in;</li>
+<li>If the courses change, the classes can be automatically/manually updated thanks to iCorsi&#39;s API</li>
+</ul>
+</p>
+<h1 id="ex---quality-attribute-scenario"><span class='task'>2.</span>  Quality Attribute Scenario</h1>
+<section class="instructions"><ol>
+<li><p>Pick a scenario for a specific quality attribute. Describe it with natural language.</p>
+</li>
+<li><p>Refine the scenario using the following structure:</p>
+</li>
+</ol>
+<img src="./puml_e0.svg"><p><em>Stimulus</em>: condition affecting the system</p>
+<p><em>Source</em>: entity generating the stimulus</p>
+<p><em>Environment</em>: context under which stimulus occurred (e.g., build, test, deployment, startup, normal operation, overload, failure, attack, change)</p>
+<p><em>Response</em>: observable result of the stimulus</p>
+<p><em>Measure</em>: benchmark or target value defining a successful response</p>
+<section class="pass"><span>&starf;&star;&star;: </span>3 scenarios</section><section class="ok"><span>&starf;&starf;&star;: </span>&gt;3 scenarios</section><section class="exceed"><span>&starf;&starf;&starf;: </span>&gt;6 scenarios using challenging qualities</section></section><h2 id="scenario-1">Scenario #1</h2>
+<p>Quality: <em>Testability</em></p>
+<p>Scenario: In the case of a new release being pushed, it must have a code coverage of at least 90% and pass all tests before being deployed.</p>
+<img src="./puml_e1.svg"><h2 id="scenario-2">Scenario #2</h2>
+<p>Quality: <em>Deployability</em></p>
+<p>Scenario: If all tests pass and the code coverage is at least 90%, the release can be deployed on the production server.</p>
+<img src="./puml_e2.svg"><h2 id="scenario-3">Scenario #3</h2>
+<p>Quality: <em>Recoverability</em></p>
+<p>Scenario: After maintenance work, the server must come back online in less than 1 minute.</p>
+<img src="./puml_e3.svg"><h2 id="scenario-4">Scenario #4</h2>
+<p>Quality: <em>Authentication</em></p>
+<p>Scenario: If a user is authenticated, it must be logged out automatically after 30 minutes of inactivity.</p>
+<img src="./puml_e4.svg"><h2 id="scenario-5">Scenario #5</h2>
+<p>Quality: <em>Durability</em></p>
+<p>Scenario: If the shortened URL hasn&#39;t been used for at least 1 week, remove it from the database.</p>
+<img src="./puml_e5.svg"><h2 id="scenario-6">Scenario #6</h2>
+<p>Quality: <em>Composability</em></p>
+<p>Scenario: When all components are ready, they are composed by means of a docker compose files into 2 separate docker images, one for the backend and one for the frontend.</p>
+<img src="./puml_e6.svg"><h2 id="scenario-7">Scenario #7</h2>
+<p>Quality: <em>Performance</em></p>
+<p>Scenario: If a user tries to access the website, this should load and be ready to use in less than 1 second.</p>
+<img src="./puml_e7.svg"><h1 id="ex---quality-attribute-tradeoff"><span class='task'>3.</span>  Quality Attribute Tradeoff</h1>
+<section class="instructions"><p>Pick a free combination of two qualities on the <a href="https://usi365.sharepoint.com/:x:/s/MSDE2023-SoftwareArchitecture/EbK1lRTVOUZJhQoz0XdUBwIBd5vd5yQblOaOwYze4ovbuA?e=6aexs6">map</a> and write your name to claim it.</p>
+<p>Then write a short text giving an example for the tradeoff in this assignment.</p>
+<section class="pass"><span>&starf;&star;&star;: </span>1 unique trade-off</section><section class="ok"><span>&starf;&starf;&star;: </span>2 trade-offs</section><section class="exceed"><span>&starf;&starf;&starf;: </span>&gt;2 trade-offs</section></section><h2 id="usability-vs-complexity">Usability vs. Complexity</h2>
+<p>By making the service usable, we want as many people as possible to be able to use it with little to none prior knowledge. However, this would mean that advanced features cannot be developed. On the other hand, we can develop more advanced features, filtering methods etc., but then the system becomes less usable and users would be required to have some previous knowledge of the domain.</p>
+<h2 id="durability-vs-performance">Durability vs. Performance</h2>
+<p>If we wanted to save in the server all the URLs generated by the users, then this would mean that increasing the number of users will in turn increase the number of URLs in the server, which in turn will lead to a degradation of the performance of the service itself. On the other hand, by saving just the most frequent URLs, this would lead to an improvement in the performance of the service.</p>
+<h2 id="customizability-vs-design-consistency">Customizability vs. Design Consistency</h2>
+<p>Developing a platform that can be used by any university for their calendars and classrooms would be great, but this would lead to inexistent design consistency, since every university could possibly change some sections to whatever they prefer. Making the website design consistent, on the other hand, would lead to the possibility of making the website only available to USI (similarly to what happens with iCorsi).</p>
+<h1 id="ex---feature-modeling"><span class='task'>4.</span>  Feature Modeling</h1>
+<section class="instructions"><p>In the context of your chosen project domain, describe your domain using a feature model.</p>
+<p>The feature model should be correctly visualized using the following template:</p>
+<p><img src="./puml_0.svg" alt="Example Feature Model Diagram"></p>
+<p><img src="./fml_6.svg" alt="Example Feature Model Diagram"></p>
+<p>If possible, make use of all modeling constructs.</p>
+<section class="pass"><span>&starf;&star;&star;: </span>Include at least 4 non-trivial features</section><section class="ok"><span>&starf;&starf;&star;: </span>Include at least 6 non-trivial features, which are all implemented by your project</section><section class="exceed"><span>&starf;&starf;&starf;: </span>Include more than 8 non-trivial features, indicate which are found in your project and which belong to one competitor</section></section><p><img src="./fml_7.svg" alt=""></p>
+<br/>
+
+<p>The feature that belongs to a &quot;competitor&quot; (i.e. USI), is the generation of the calendars with all courses of a program. All the other features are only found in the USI Calendar project.</p>
+<h1 id="ex---context-diagram"><span class='task'>5.</span>  Context Diagram</h1>
+<section class="instructions"><p>Prepare a context diagram to define the design boundary for your project.</p>
+<p>Here is a PlantUML/C4 example to get started.</p>
+<p><img src="./puml_1.svg" alt="Example Context Diagram"></p>
+<p>Make sure to include all possible user personas and external dependencies you may need.</p>
+<section class="pass"><span>&starf;&star;&star;: </span>1 User and 1 Dependency</section><section class="ok"><span>&starf;&starf;&star;: </span>&gt;1 User and &gt;1 Dependency</section><section class="exceed"><span>&starf;&starf;&starf;: </span>&gt;1 User and &gt;1 Dependency, with both incoming and outgoing dependencies</section></section><p><img src="./puml_2.svg" alt=""></p>
+<h1 id="ex---component-model-top-down"><span class='task'>6.</span>  Component Model: Top-Down</h1>
+<section class="instructions"><p>Within the context of your project domain, represent a model of your modular software architecture decomposed into components.</p>
+<p>The number of components in your logical view should be between 6 and 9:</p>
+<ul>
+<li>At least one component should be further decomposed into sub components</li>
+<li>At least one component should already exist. You should plan how to reuse it, by locating it in some software repository and including in your model the exact link to its specification and its price.</li>
+<li>At least one component should be stateful.</li>
+</ul>
+<p>The logical view should represent provide/require dependencies that are consistent with the interactions represented in the process view.</p>
+<p>The process view should illustrate how the proposed decomposition is used to satisfy the main use case given by your domain model.</p>
+<p>You can add additional process views showing how other use cases can be satisfied by the same set of components.</p>
+<p>This assignment will focus on modularity-related decisions, we will worry about deployment and the container view later.</p>
+<p>Here is a PlantUML example logical view and process view.</p>
+<img src="./puml_e8.svg"><img src="./puml_e9.svg"><section class="hint"><span>Hint: </span>How to connect sub-components to other external components? Use this pattern.</section><img src="./puml_e10.svg"><section class="pass"><span>&starf;&star;&star;: </span>6 components (1 decomposed), 1 use case/process view</section><section class="ok"><span>&starf;&starf;&star;: </span>6 components (1 decomposed), 2 use case/process view</section><section class="exceed"><span>&starf;&starf;&starf;: </span>&gt;6 components (&gt;1 decomposed) and &gt;2 use case/process view</section></section><h2 id="logical-view">Logical View</h2>
+<img src="./puml_e11.svg"><h2 id="process-views">Process Views</h2>
+<h3 id="use-case-1">Use Case #1:</h3>
+<img src="./puml_e12.svg"><img src="./puml_e13.svg"><h3 id="use-case-2">Use Case #2:</h3>
+<img src="./puml_e14.svg"><img src="./puml_e15.svg"><h1 id="ex---component-model-bottom-up"><span class='task'>7.</span>  Component Model: Bottom-Up</h1>
+<section class="instructions"><p>Within the context of your project domain, represent a model of your modular software architecture decomposed into components.</p>
+<p>To design this model you should attempt to buy and reuse as many components as possible.</p>
+<p>In addition to the logical and process views, you should give a precise list to all sources and prices of the components you have selected to be reused.</p>
+<p>Write an ADR to document your component selection process (indicating which alternatives were considered).</p>
+<section class="pass"><span>&starf;&star;&star;: </span>Existing design with at least 1 reused components (1 Logical View, 1 Process View)</section><section class="ok"><span>&starf;&starf;&star;: </span>Existing design with at least 3 reused components (1 Logical View, 1 Process View, 1 ADR)</section><section class="exceed"><span>&starf;&starf;&starf;: </span>Redesign based on &gt;3 reused components (1 Logical View, &gt;1 Process View, &gt;1 ADR)</section></section><h2 id="logical-view-1">Logical View</h2>
+<img src="./puml_e16.svg"><h3 id="external-components">External Components:</h3>
+<p><strong>golang-ical</strong>: <a href="https://github.com/JacopoD/golang-ical">https://github.com/JacopoD/golang-ical</a></p>
+<p><strong>URL Database</strong>: <a href="https://www.mongodb.com/atlas/database">https://www.mongodb.com/atlas/database</a></p>
+<p><strong>Chatroom</strong>: <a href="https://minnit.chat/">https://minnit.chat/</a></p>
+<p><strong>iCorsi API</strong>: <a href="https://moodledev.io/docs/apis">https://moodledev.io/docs/apis</a></p>
+<p><strong>Github API</strong>: <a href="https://docs.github.com/en/rest?apiVersion=2022-11-28">https://docs.github.com/en/rest?apiVersion=2022-11-28</a></p>
+<h2 id="process-views-1">Process Views</h2>
+<h3 id="use-case-1-1">Use Case #1:</h3>
+<img src="./puml_e17.svg"><h3 id="use-case-2-1">Use Case #2:</h3>
+<img src="./puml_e18.svg"><p><h3></h3><h2 id="adr-4-choosing-database-service">ADR #4 (Choosing Database Service)</h2>
+<ol>
+<li>What did you decide?</li>
+</ol>
+<p>USI Calendar will use MongoDB Atlas Serverless as the database module.</p>
+<ol start="2">
+<li>What was the context for your decision?</li>
+</ol>
+<p>For the database module of USI Calendar, we need something that is bare-bone but still offers security and backup
+features. Since the traffic is not that frequent, a pay as you go service would be the best.</p>
+<ol start="3">
+<li>What is the problem you are trying to solve?</li>
+</ol>
+<p>What is the best database service to use for USI Calendar?</p>
+<ol start="4">
+<li>Which alternative options did you consider?</li>
+</ol>
+<ul>
+<li>Serverless - $0.10/Million Reads and $1.00/Million Writes</li>
+<li>Dedicated Server - From $0.20/h</li>
+<li>Hosting it locally - Free</li>
+</ul>
+<ol start="5">
+<li>Which one did you choose?</li>
+</ol>
+<p>I chose the first option: Serverless</p>
+<ol start="6">
+<li>What is the main reason for that?</li>
+</ol>
+<p>The following are the consequences of this decision:</p>
+<ul>
+<li>Very competitive price</li>
+<li>Pay-as-you-go pricing plan</li>
+<li>It has a max of 1TB of storage for $0.25/GB-month</li>
+<li>It has always-on security and backups</li>
+</ul>
+<ul>
+<li>Does not have a server connected to it where to host the backend</li>
+</ul>
+
+<h3></h3><h2 id="adr-5-choosing-chatroom-service">ADR #5 (Choosing Chatroom Service)</h2>
+<ol>
+<li>What did you decide?</li>
+</ol>
+<p>USI Calendar will use Minnit as the service for the chatroom module
+of the website.</p>
+<ol start="2">
+<li>What was the context for your decision?</li>
+</ol>
+<p>The chatrooms of the classrooms will be created based on the number of
+users per course. This chatroom should be customizable and able to
+support many concurrent users.</p>
+<ol start="3">
+<li>What is the problem you are trying to solve?</li>
+</ol>
+<p>What is the best chatroom service for USI Calendar?</p>
+<ol start="4">
+<li>Which alternative options did you consider?</li>
+</ol>
+<ul>
+<li>DeadSimpleChat - From $199/Month</li>
+<li>Minnit - From $100/Month</li>
+<li>Chatango - Free</li>
+</ul>
+<ol start="5">
+<li>Which one did you choose?</li>
+</ol>
+<p>I chose the second option: Minnit</p>
+<ol start="6">
+<li>What is the main reason for that?</li>
+</ol>
+<p>The following are the consequences of this decision:</p>
+<ul>
+<li>Customizable UI</li>
+<li>Best price</li>
+<li>Up to 2,500 concurrent users</li>
+<li>Unlimited number of different chatrooms</li>
+</ul>
+</p>
+<h1 id="ex---interfaceapi-specification"><span class='task'>8.</span>  Interface/API Specification</h1>
+<section class="instructions"><p>In this iteration, we will detail your previous model to specify the provided interface of all components based on their interactions found in your existing process views.</p>
+<ol>
+<li><p>choose whether to use the top down or bottom up model. If you specify the interfaces of the bottom up model, your interface descriptions should match what the components you reuse already offer.</p>
+</li>
+<li><p>decide which interface elements are operations, properties, or events.</p>
+</li>
+</ol>
+<p>Get started with one of these PlantUML templates, or you can come up with your own notation to describe the interfaces, as long as it includes all the necessary details.</p>
+<p>The first template describes separately the provided/required interfaces of each component. </p>
+<p><img src="./puml_3.svg" alt="Separate Required/Provided Interfaces"></p>
+<p>The second template annotates the logical view with the interface descriptions: less redundant, but needs the logical dependencies to be modeled to show which are the required interfaces.</p>
+<p><img src="./puml_4.svg" alt="Shared Interfaces"></p>
+<section class="pass"><span>&starf;&star;&star;: </span>define interfaces of all outer-level components</section><section class="ok"><span>&starf;&starf;&star;: </span>Define interfaces of all outer-level components. Does your architecture publish a Web API? If not, extend it so that it does. </section><section class="exceed"><span>&starf;&starf;&starf;: </span>Also, document the Web API using the OpenAPI language. You can use the <a href="http://api-ace.inf.usi.ch/openapi-to-tree/">OpenAPI-to-Tree</a> tool to visualize the structure of your OpenAPI description.</section></section><h2 id="interface-specification">Interface Specification</h2>
+<img src="./puml_e19.svg"><h2 id="openapi-specification">OpenAPI Specification</h2>
+<p><img src="api.png" alt=""></p>
+<h1 id="ex---connector-view"><span class='task'>9.</span>  Connector View</h1>
+<section class="instructions"><p>Extend your existing models introducing the connector view</p>
+<p>For every pair of connected components (logical view), pick the most suitable connector. Existing components can play the role of connector, or new connectors may need to be introduced.</p>
+<p><img src="./c5_8.svg" alt="Example Connector View Diagram"></p>
+<p>Make sure that the interactions shown in the process views reflect the primitives of the selected connector</p>
+<section class="pass"><span>&starf;&star;&star;: </span>model existing connectors based on previous model decisions</section><section class="ok"><span>&starf;&starf;&star;: </span>model existing connectors based on previous model decisions, write an ADR about the choice of one connector</section><section class="exceed"><span>&starf;&starf;&starf;: </span>introduce a new type of connector and update your existing process view 
+(sequence diagram) to show the connector primitives in action</section></section><h2 id="connector-view">Connector View</h2>
+<p><img src="./c5_9.svg" alt=""></p>
+<h2 id="process-view">Process View</h2>
+<img src="./puml_e20.svg"><p><h3></h3><h2 id="adr-6-choice-of-connector">ADR #6 (Choice of Connector)</h2>
+<ol>
+<li>What did you decide?</li>
+</ol>
+<p>A Stream connector is used to connect the Notification System component and the User Interface component.</p>
+<ol start="2">
+<li>What was the context for your decision?</li>
+</ol>
+<p>Notifications need to be pushed from the Notification System component to the user interface. This needs to be done in
+such a way that a notification is displayed at a time.</p>
+<ol start="3">
+<li>What is the problem you are trying to solve?</li>
+</ol>
+<p>What is the best connector to use between the Notification System and the User Interface?</p>
+<ol start="4">
+<li>Which alternative options did you consider?</li>
+</ol>
+<ul>
+<li>Stream Connector</li>
+<li>Message Bus</li>
+</ul>
+<ol start="5">
+<li>Which one did you choose?</li>
+</ol>
+<p>I chose the first option: Stream Connector</p>
+<ol start="6">
+<li>What is the main reason for that?</li>
+</ol>
+<p>The following are the consequences of this decision:</p>
+<ul>
+<li>1-1 Cardinality</li>
+<li>Asynchronous</li>
+<li>Transfers only data</li>
+</ul>
+</p>
+<h1 id="ex---adapters-and-coupling"><span class='task'>10.</span>  Adapters and Coupling</h1>
+<section class="instructions"><ol>
+<li>Highlight the connectors (or components) in your existing bottom-up design playing the role of adapter. (We suggest to use the bottom-up design since when dealing with externally sourced components, their interfaces can be a source of mismatches).</li>
+<li>Which kind of mismatch** are they solving?</li>
+<li>Introduce a wrapper in your architecture to hide one of the previously highlighted adapters</li>
+<li>Where would standard interfaces play a role in your architecture? Which standards could be relevant in your domain?</li>
+<li>Explain how one or more pairs of components are coupled according to different coupling facets</li>
+<li>Provide more details on how each adapter solves the mismatches identified using pseudo-code or the actual code</li>
+<li>How can you improve your architectural model to minimize coupling between components? (Include a revised logical/connector view with your solution)</li>
+</ol>
+<section class="pass"><span>&starf;&star;&star;: </span>1-5 (with one adapter)</section><section class="ok"><span>&starf;&starf;&star;: </span>1-6 (with at least two adapters)</section><section class="exceed"><span>&starf;&starf;&starf;: </span>1-7 (with at least two adapters)</section><p>** If you do not find any mismatch in your existing design we suggest to introduce one artificially.</p>
+<h2 id="hints">Hints</h2>
+<ul>
+<li><p>(1) Should we find cases where two components cannot communicate (and are doing it wrongly) and highlight they would need an adapter?, or cases where we have already a &quot;component playing the role of adapter in the view&quot; and highlight only the adapter?</p>
+<p><em>Both are fine. We assumed that if you draw a dependency (or a connector) the interfaces match, but if you detect that the components that should communicate cannot communicate then of course introduce an adapter to solve the mismatch</em></p>
+</li>
+<li><p>(2) Please show the details about the two interfaces which do not match (e.g., names of parameters, object structures) so that it becomes clear why an adapter is needed and what the adapter should do to bridge the mismatch</p>
+</li>
+<li><p>(5-6) These questions are about the implications on coupling based on the decisions you documented in the connector view.
+Whenever you have a connector you couple together the components and different connectors will have different forms of coupling</p>
+<p>For example, if you use calls everywhere, do you really need them everywhere? is there some pair of components where you could use a message queue instead?</p>
+<p>Regarding the coupling facets mentioned in question 5. You do not have to answer all questions related to &quot;discovery&quot;, &quot;session&quot;, &quot;binding&quot;, &quot;interaction&quot;, &quot;timing&quot;, &quot;interface&quot; and &quot;platform&quot; (p.441, Coupling Facets). Just the ones that you think are relevant for your design and by answering them you can get ideas on how to do question 6.</p>
+</li>
+</ul>
+</section><h2 id="logical-view-2">Logical View</h2>
+<img src="./puml_e21.svg"><h2 id="tasks">Tasks</h2>
+<ol>
+<li>The two components that are acting as adapters are the <em>URL Middleman</em> and the <em>API Manager</em>.</li>
+<li>In the case of the <em>golang-ical Adapter</em> , it is using the API provided by <em>golang-ical</em> and creating ad-hoc methods to aggregate multiple ical URLs to form a single calendar. In the case of the <em>GH/iC Adapter</em>, it is used to uniform the data received by the iCorsi and GitHub APIs.</li>
+<li>The two wrappers are highlighted in the above logical view.</li>
+<li>In the case of the <em>golang-ical Wrapper</em>, it would need to use the <strong>Internet Calendaring and Scheduling Core Object Specification
+(iCalendar)</strong> (<a href="https://www.ietf.org/rfc/rfc2445.txt">RFC-2445</a>). In the case of the <em>GH/iC Wrapper</em>, however, I would use an ad-hoc standard to normalize the data returned by both iCorsi and GitHub.</li>
+<li>In my case I can distinguish two different types of coupling, one regarding the components based on the HTTP Protocol, and the other regarding the components connected based on the iCalendar specification. In the case of the components connected through the HTTP Protocol -- i.e., all the frontend components and the respective backend components -- we can say that such components are loosely coupled. In the case of the components connected based on the iCalendar specification, we can say that the components -- i.e., the <em>golang-ical Adapter</em> and <em>golang-ical</em> are tightly coupled.</li>
+<li>Let&#39;s see the pseudocode for the two cases:</li>
+</ol>
+<pre><code class="language-golang">// golang-ical Adapter
+// Here we are in the URL Middleman component
+var baseIcalUrl string = &quot;https://search.usi.ch/[...]&quot;
+var coursesURLs *[]string = mongo.GetCoursesURLs()
+
+icals := icalAdapter.ConvertToIcals(&amp;coursesURLs)
+aggIcal := icalAdapter.Aggregate(&amp;baseIcalUrl, &amp;icals)
+
+
+// GH/iC Adapter
+// Here we are in one of the components that makes use of Github/iCorsi data
+iCorsiData := ghicManager.GetiCorsiData(&quot;courses&quot;)
+githubData := ghicManager.GetGithubData(&quot;user&quot;)
+
+cleanDataiCorsi := ghicAdapter.Convert(&amp;iCorsiData)
+cleanDataGithub := ghicAdapter.Convert(&amp;githubData)
+</code></pre>
+<ol start="7">
+<li>Coupling has been minimized with the introduction of the <em>golang-ical Wrapper</em>. The logical view can be found at the beginning of this exercise.</li>
+</ol>
+<h1 id="ex---physical-and-deployment-views"><span class='task'>11.</span>  Physical and Deployment Views</h1>
+<section class="instructions"><p>a. Extend your architectural model with the following viewpoints:</p>
+<ol>
+<li><p>Physical or Container View</p>
+</li>
+<li><p>Deployment View</p>
+</li>
+</ol>
+<p>Your model should be non-trivial: include more than one physical device/virtual container (or both). Be ready to discuss which connectors are found at the device/container boundaries.</p>
+<p>b. Write an ADR about which deployment strategy you plan to adopt. The alternatives to be considered are: big bang, blue/green, shadow, pilot, gradual phase-in, canary, A/B testing.</p>
+<p>c. (Optional) Prepare a demo of a basic continuous integration and delivery pipeline for your architectural documentation so that you can obtain a single, integrated PDF with all the viewpoints you have modeled so far. </p>
+<p>For example:</p>
+<ul>
+<li>configure a GitHub webhook to be called whenever you push changes to your documentation</li>
+<li>setup a GitHub action (or similar) to build and publish your documentation on a website</li>
+</ul>
+<section class="pass"><span>&starf;&star;&star;: </span>1 physical view, 1 deployment view, 1 ADR (b.)</section><section class="ok"><span>&starf;&starf;&star;: </span>&gt;1 physical view, &gt;1 deployment view, 1 ADR (b.)</section><section class="exceed"><span>&starf;&starf;&starf;: </span>1 physical view, 1 deployment view, 1 ADR (b.) + 1 demo (c.)</section></section><h1 id="ex---availability-and-services"><span class='task'>12.</span>  Availability and Services</h1>
+<section class="instructions "><p>The goal of this week is to plan how to deliver your software as a service with high availability.</p>
+<ol>
+<li>If necessary, change your deployment design so that your software is hosted on a server (which could be running as a Cloud VM). Your SaaS architecture should show how your SaaS can be remotely accessed from a client such as a Web browser, or a mobile app</li>
+<li>Sketch your software as a service pricing model (optional)</li>
+<li>How would you define the availability requirements in your project domain? For example, what would be your expectation for the duration of planned/unplanned downtimes or the longest response time tolerated by your clients?</li>
+<li>Which strategy do you adopt to monitor your service&#39;s availability? Extend your architecture with a watchdog or a heartbeat monitor and motivate your choice with an ADR.</li>
+<li>What happens when a stateless component goes down? model a sequence diagram to show what needs to happen to recover one of your critical stateless components</li>
+<li>How do you plan to recover stateful components? write an ADR about your choice of replication strategy and whether you prefer consistency vs. availability. Also, consider whether event sourcing would help in your context.</li>
+<li>How do you plan to avoid cascading failures? Be ready to discuss how the connectors (modeled in your connector view) impact the reliability of your architecture.</li>
+<li>How did you mitigate the impact of your external dependencies being not available? (if applicable)</li>
+</ol>
+<section class="pass"><span>&starf;&star;&star;: </span>1, 3, 4, one of:  5, 6, 7, 8</section><section class="ok"><span>&starf;&starf;&star;: </span>1, 2, 3, 4, two of:  5, 6, 7, 8</section><section class="exceed"><span>&starf;&starf;&starf;: </span>1, 2, 3, 4, 5, 6, 7, 8</section></section><h1 id="ex---flexibility"><span class='task'>13.</span>  Flexibility</h1>
+<section class="instructions "><p>Only dead software stops changing. You just received a message from your customer, they have an idea. Is your architecture ready for it?</p>
+<ol>
+<li><p>Pick a new use case scenario. Precisely, what exactly do you need to change of your existing architecture so that it can be supported? Model the updated logical/process/deployment views.</p>
+</li>
+<li><p>Pick another use case scenario so that it can be supported without any major architectural change (i.e., while you cannot add new components, it is possible to extend the interface of existing ones or introduce new dependencies). Illustrate with a process view, how your previous design can satisfy the new requirement.</p>
+</li>
+<li><p>Change impact. One of your externally sourced component/Web service API has announced it will introduce a breaking change. What is the impact of such change? How can you control and limit the impact of such change? Update your logical view</p>
+</li>
+<li><p>Open up your architecture so that it can be extended with plugins by its end-users. Where would be a good extension point? Update your logical view and give at least one example of what a plugin would actually do.</p>
+</li>
+<li><p>Assuming you have a centralized deployment with all stateful components storing their state in the same database, propose a strategy to split the monolith into at least two different microservices. Model the new logical/deployment view as well as the interfaces of each microservice you introduce.</p>
+</li>
+</ol>
+<section class="pass"><span>&starf;&star;&star;: </span>1, one out of 2-5.</section><section class="ok"><span>&starf;&starf;&star;: </span>1, two out of 2-5.</section><section class="exceed"><span>&starf;&starf;&starf;: </span>1-5.</section></section>
+    </main>
+
+
+<footer>
+    5/7/2023, 7:15:06 PM
+</footer>
+
+</body>
+
+</html>
