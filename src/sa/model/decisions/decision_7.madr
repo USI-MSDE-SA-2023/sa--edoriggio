@@ -1,0 +1,36 @@
+## ADR #7 (Choice of Deployment Strategy)
+
+1. What did you decide?
+
+The chosen deployment strategy will be the Blue/Green deployment strategy.
+
+2. What was the context for your decision?
+
+USI Calendar has a small user base which is all composed by USI university students. Moreover, since USI calendar is
+still in very early development, releases can be pushed as soon as the features are ready.
+
+3. What is the problem you are trying to solve?
+
+What is the more appropriate deployment strategy for USI Calendar?
+
+4.  Which alternative options did you consider?
+
+* Big Bang
+* Blue/Green
+* Shadow
+* Pilot
+* Gradual Phase-in
+* Canary
+* A/B testing
+
+5. Which one did you choose?
+
+I chose the second option: Blue/Green
+
+6. What is the main reason for that?
+
+The following are the consequences of this decision:
++ Small user base
++ Can easily switch between new and old version
+
+- User might be required to manually change some configurations (e.g. add another/change URL in his/her calendar)

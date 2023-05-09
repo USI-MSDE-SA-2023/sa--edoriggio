@@ -1400,6 +1400,8 @@ skinparam defaultFontName Courier
 @enduml
 ```
 
+![](./decisions/decision_7.madr)
+
 
 
 # Ex - Availability and Services
