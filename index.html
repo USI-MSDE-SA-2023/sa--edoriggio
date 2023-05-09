@@ -730,7 +730,49 @@ cleanDataGithub := ghicAdapter.Convert(&amp;githubData)
 <section class="pass"><span>&starf;&star;&star;: </span>1 physical view, 1 deployment view, 1 ADR (b.)</section><section class="ok"><span>&starf;&starf;&star;: </span>&gt;1 physical view, &gt;1 deployment view, 1 ADR (b.)</section><section class="exceed"><span>&starf;&starf;&starf;: </span>1 physical view, 1 deployment view, 1 ADR (b.) + 1 demo (c.)</section></section><h2 id="container-view">Container View</h2>
 <p><img src="./puml_5.svg" alt=""></p>
 <h2 id="deployment-view">Deployment View</h2>
-<img src="./puml_e22.svg"><h1 id="ex---availability-and-services"><span class='task'>12.</span>  Availability and Services</h1>
+<img src="./puml_e22.svg"><p><h3></h3><h2 id="adr-7-choice-of-deployment-strategy">ADR #7 (Choice of Deployment Strategy)</h2>
+<ol>
+<li>What did you decide?</li>
+</ol>
+<p>The chosen deployment strategy will be the Blue/Green deployment strategy.</p>
+<ol start="2">
+<li>What was the context for your decision?</li>
+</ol>
+<p>USI Calendar has a small user base which is all composed by USI university students. Moreover, since USI calendar is
+still in very early development, releases can be pushed as soon as the features are ready.</p>
+<ol start="3">
+<li>What is the problem you are trying to solve?</li>
+</ol>
+<p>What is the more appropriate deployment strategy for USI Calendar?</p>
+<ol start="4">
+<li>Which alternative options did you consider?</li>
+</ol>
+<ul>
+<li>Big Bang</li>
+<li>Blue/Green</li>
+<li>Shadow</li>
+<li>Pilot</li>
+<li>Gradual Phase-in</li>
+<li>Canary</li>
+<li>A/B testing</li>
+</ul>
+<ol start="5">
+<li>Which one did you choose?</li>
+</ol>
+<p>I chose the second option: Blue/Green</p>
+<ol start="6">
+<li>What is the main reason for that?</li>
+</ol>
+<p>The following are the consequences of this decision:</p>
+<ul>
+<li>Small user base</li>
+<li>Can easily switch between new and old version</li>
+</ul>
+<ul>
+<li>User might be required to manually change some configurations (e.g. add another/change URL in his/her calendar)</li>
+</ul>
+</p>
+<h1 id="ex---availability-and-services"><span class='task'>12.</span>  Availability and Services</h1>
 <section class="instructions "><p>The goal of this week is to plan how to deliver your software as a service with high availability.</p>
 <ol>
 <li>If necessary, change your deployment design so that your software is hosted on a server (which could be running as a Cloud VM). Your SaaS architecture should show how your SaaS can be remotely accessed from a client such as a Web browser, or a mobile app</li>
@@ -761,7 +803,7 @@ cleanDataGithub := ghicAdapter.Convert(&amp;githubData)
 
 
 <footer>
-    5/7/2023, 7:25:44 PM
+    5/9/2023, 8:16:22 AM
 </footer>
 
 </body>
