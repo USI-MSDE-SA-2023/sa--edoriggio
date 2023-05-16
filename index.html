@@ -273,6 +273,7 @@ footer {
 <a class="d2" href="#container-view">Container View</a>
 <a class="d2" href="#deployment-view">Deployment View</a>
 <a class="d1" href="#ex---availability-and-services"><span class='task'>12.</span>  Availability and Services</a>
+<a class="d2" href="#tasks">Tasks</a>
 <a class="d1" href="#ex---flexibility"><span class='task'>13.</span>  Flexibility</a>
 
         </nav>
@@ -784,7 +785,85 @@ still in very early development, releases can be pushed as soon as the features 
 <li>How do you plan to avoid cascading failures? Be ready to discuss how the connectors (modeled in your connector view) impact the reliability of your architecture.</li>
 <li>How did you mitigate the impact of your external dependencies being not available? (if applicable)</li>
 </ol>
-<section class="pass"><span>&starf;&star;&star;: </span>1, 3, 4, one of:  5, 6, 7, 8</section><section class="ok"><span>&starf;&starf;&star;: </span>1, 2, 3, 4, two of:  5, 6, 7, 8</section><section class="exceed"><span>&starf;&starf;&starf;: </span>1, 2, 3, 4, 5, 6, 7, 8</section></section><h1 id="ex---flexibility"><span class='task'>13.</span>  Flexibility</h1>
+<section class="pass"><span>&starf;&star;&star;: </span>1, 3, 4, one of:  5, 6, 7, 8</section><section class="ok"><span>&starf;&starf;&star;: </span>1, 2, 3, 4, two of:  5, 6, 7, 8</section><section class="exceed"><span>&starf;&starf;&starf;: </span>1, 2, 3, 4, 5, 6, 7, 8</section></section><h2 id="tasks-1">Tasks</h2>
+<p><strong>1.</strong> My service already runs on a server. It can be accessed through a browser.</p>
+<p><strong>2.</strong> Since this is a service aimed at students, it is free to use.</p>
+<p><strong>3.</strong> Since the calendars of the users poll USI Calendar backend every <em>x</em> amount of time (depending on the calendar), thus the service needs to have no downtime. Planned and unplanned downtime should be minimal, because of the reason explained before.</p>
+<p><strong>4.</strong> Below are the new architecture and the ADR for this task:</p>
+<img src="./puml_e23.svg"><p><h3></h3><h2 id="adr-8-monitoring-strategy">ADR #8 (Monitoring Strategy)</h2>
+<ol>
+<li>What did you decide?</li>
+</ol>
+<p>The chosen monitoring strategy is a watchdog.</p>
+<ol start="2">
+<li>What was the context for your decision?</li>
+</ol>
+<p>We need something that is easily implementable in the already existing architecture. Moreover, something that emulates
+the call of an external calendar service is best.</p>
+<ol start="3">
+<li>What is the problem you are trying to solve?</li>
+</ol>
+<p>What is the more appropriate monitoring strategy for USI Calendar?</p>
+<ol start="4">
+<li>Which alternative options did you consider?</li>
+</ol>
+<ul>
+<li>Watchdog</li>
+<li>Heartbeat</li>
+</ul>
+<ol start="5">
+<li>Which one did you choose?</li>
+</ol>
+<p>I chose the first option: Watchdog</p>
+<ol start="6">
+<li>What is the main reason for that?</li>
+</ol>
+<p>The following are the consequences of this decision:</p>
+<ul>
+<li>Easy to implement</li>
+<li>Emulates real requests made to the backend by calendars</li>
+</ul>
+</p>
+<p><strong>5.</strong> Below is a sequence diagram to handle the failure of the <strong>URL Middleman</strong> component:</p>
+<img src="./puml_e24.svg"><p><strong>6.</strong> The only stateful component I have in my system is the <em>Shortened URLs Database</em> component. Following, is the ADR that documents the decision of availability vs. consistency:</p>
+<p><h3></h3><h2 id="adr-9-availability-vs-consistency">ADR #9 (Availability vs. Consistency)</h2>
+<ol>
+<li>What did you decide?</li>
+</ol>
+<p>The chosen replication strategy is CA (Consistency+Availability).</p>
+<ol start="2">
+<li>What was the context for your decision?</li>
+</ol>
+<p>We need a replication strategy that takes into account the continuous availability of the service and the fact that all
+replicas must stay consistent.</p>
+<ol start="3">
+<li>What is the problem you are trying to solve?</li>
+</ol>
+<p>What is the more appropriate replication strategy for USI Calendar?</p>
+<ol start="4">
+<li>Which alternative options did you consider?</li>
+</ol>
+<ul>
+<li>Consistency+Availability (Not Replicated)</li>
+<li>Consistency+Partition Tolerance (Not Available)</li>
+<li>Availability+Partition Tolerance (Not Consistent)</li>
+</ul>
+<ol start="5">
+<li>Which one did you choose?</li>
+</ol>
+<p>I chose the first option: Consistency+Availability (Not Replicated)</p>
+<ol start="6">
+<li>What is the main reason for that?</li>
+</ol>
+<p>The following are the consequences of this decision:</p>
+<ul>
+<li>Service remains always available to the users</li>
+<li>Consistency of the replicas is guaranteed</li>
+</ul>
+</p>
+<p><strong>7.</strong> In my case, most of the components make use of the <em>procedure call</em> to communicate between one another. If, for example, the <em>URL Middleman</em> component fails, then basically all the backend becomes unavailable. The <em>Watchdog</em> component has been introduced to solve exactly this problem. Whenever the <em>Watchdog</em> detects a failure in the <em>URL Middleman</em> component, it restarts it.</p>
+<p><strong>8.</strong> The two main external APIs my system relies on are the Github and iCorsi APIs. In either service or both become unavailable, then the system will accept it and suspend the possibility to include assignments calendar in the export, and the Github classroom section will become temporarily unavailable. Only when the two services will become available again, will the website make the two features available again.</p>
+<h1 id="ex---flexibility"><span class='task'>13.</span>  Flexibility</h1>
 <section class="instructions "><p>Only dead software stops changing. You just received a message from your customer, they have an idea. Is your architecture ready for it?</p>
 <ol>
 <li><p>Pick a new use case scenario. Precisely, what exactly do you need to change of your existing architecture so that it can be supported? Model the updated logical/process/deployment views.</p>
@@ -803,7 +882,7 @@ still in very early development, releases can be pushed as soon as the features 
 
 
 <footer>
-    5/9/2023, 8:16:22 AM
+    5/16/2023, 11:55:01 AM
 </footer>
 
 </body>
