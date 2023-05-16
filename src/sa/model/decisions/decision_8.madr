@@ -1,0 +1,29 @@
+## ADR #8 (Monitoring Strategy)
+
+1. What did you decide?
+
+The chosen monitoring strategy is a watchdog.
+
+2. What was the context for your decision?
+
+We need something that is easily implementable in the already existing architecture. Moreover, something that emulates
+the call of an external calendar service is best.
+
+3. What is the problem you are trying to solve?
+
+What is the more appropriate monitoring strategy for USI Calendar?
+
+4.  Which alternative options did you consider?
+
+* Watchdog
+* Heartbeat
+
+5. Which one did you choose?
+
+I chose the first option: Watchdog
+
+6. What is the main reason for that?
+
+The following are the consequences of this decision:
++ Easy to implement
++ Emulates real requests made to the backend by calendars

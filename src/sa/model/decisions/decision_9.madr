@@ -1,0 +1,30 @@
+## ADR #9 (Availability vs. Consistency)
+
+1. What did you decide?
+
+The chosen replication strategy is CA (Consistency+Availability).
+
+2. What was the context for your decision?
+
+We need a replication strategy that takes into account the continuous availability of the service and the fact that all
+replicas must stay consistent.
+
+3. What is the problem you are trying to solve?
+
+What is the more appropriate replication strategy for USI Calendar?
+
+4.  Which alternative options did you consider?
+
+* Consistency+Availability (Not Replicated)
+* Consistency+Partition Tolerance (Not Available)
+* Availability+Partition Tolerance (Not Consistent)
+
+5. Which one did you choose?
+
+I chose the first option: Consistency+Availability (Not Replicated)
+
+6. What is the main reason for that?
+
+The following are the consequences of this decision:
++ Service remains always available to the users
++ Consistency of the replicas is guaranteed

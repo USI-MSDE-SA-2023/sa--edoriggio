@@ -1427,6 +1427,104 @@ Exceed: 1, 2, 3, 4, 5, 6, 7, 8
 
 }
 
+## Tasks
+**1.** My service already runs on a server. It can be accessed through a browser.
+
+**2.** Since this is a service aimed at students, it is free to use.
+
+**3.** Since the calendars of the users poll USI Calendar backend every _x_ amount of time (depending on the calendar), thus the service needs to have no downtime. Planned and unplanned downtime should be minimal, because of the reason explained before.
+
+**4.** Below are the new architecture and the ADR for this task:
+
+```puml
+@startuml
+node "Frontend" {
+    [Web Application] as WAPP
+    [Notification System] as NS
+    
+    WAPP -- NS
+}
+
+node "Monitor" {
+    [Watchdog] as WDOG
+}
+
+database "Database" {
+    [Shortened URLs] as URLS
+}
+
+node "Backend" {
+    [URL Middleman] as URL
+    [golang-ical] as ICAL
+    
+    component "Courses Extractor" {
+        [Extractor] as EXT
+        [Links Repository] as REPO
+        
+        REPO -- EXT
+    }
+    
+    component "API Manager" {
+        [API Manager] as API
+        [iCorsi API] as ICAPI
+        [Github API] as GHAPI
+        
+        API -- ICAPI
+        API -- GHAPI
+    }
+    
+    URL -- API
+    ICAL -- URL
+    EXT -- URL
+    URLS -- URL
+}
+
+WAPP -- URL : "HTTPS"
+WDOG --- URL
+
+skinparam monochrome true
+skinparam shadowing false
+skinparam defaultFontName Courier
+@enduml
+```
+
+![](./decisions/decision_8.madr)
+
+
+**5.** Below is a sequence diagram to handle the failure of the **URL Middleman** component:
+
+```puml
+@startuml
+title Restart the URL Middleman if it goes down
+
+''' PARTICIPANTS
+participant "URL Middleman" as UMM
+participant "Watchdog" AS WATCH
+participant "External Calendar" as EXT
+
+
+''' CONNECTIONS
+WATCH -> UMM: probe
+WATCH -> WATCH: timeout
+WATCH -> UMM: restart
+WATCH -> UMM: probe
+UMM -> WATCH: ok
+EXT -> UMM: GET urls/:id
+
+skinparam monochrome true
+skinparam shadowing false
+skinparam defaultFontName Courier
+@enduml
+```
+
+**6.** The only stateful component I have in my system is the _Shortened URLs Database_ component. Following, is the ADR that documents the decision of availability vs. consistency:
+
+![](./decisions/decision_9.madr)
+
+**7.** In my case, most of the components make use of the _procedure call_ to communicate between one another. If, for example, the _URL Middleman_ component fails, then basically all the backend becomes unavailable. The _Watchdog_ component has been introduced to solve exactly this problem. Whenever the _Watchdog_ detects a failure in the _URL Middleman_ component, it restarts it.
+
+**8.** The two main external APIs my system relies on are the Github and iCorsi APIs. In either service or both become unavailable, then the system will accept it and suspend the possibility to include assignments calendar in the export, and the Github classroom section will become temporarily unavailable. Only when the two services will become available again, will the website make the two features available again.
+
 
 
 # Ex - Flexibility
