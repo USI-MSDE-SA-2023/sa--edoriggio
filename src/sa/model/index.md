@@ -1997,14 +1997,6 @@ node "Frontend" {
     NS -- WAPP
 }
 
-database "URLs Database" {
-    [Shortened URLs] as URLS
-}
-
-database "Courses Database" {
-    [Users' Courses] as COURSES
-}
-
 cloud "URLs Management Cloud" {
     [URL Middleman] as URL
     [golang-ical] as ICAL
@@ -2016,6 +2008,10 @@ cloud "URLs Management Cloud" {
         
         API -- ICAPI
         API -- GHAPI
+    }
+    
+    database "URLs Database" {
+        [Shortened URLs] as URLS
     }
     
     URL -- API
@@ -2031,6 +2027,10 @@ cloud "Courses Management Cloud" {
         [Links Repository] as REPO
         
         EXT -- REPO
+    }
+    
+    database "Courses Database" {
+        [Users' Courses] as COURSES
     }
     
     CMM -- EXT
