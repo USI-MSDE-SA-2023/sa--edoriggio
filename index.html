@@ -275,6 +275,9 @@ footer {
 <a class="d1" href="#ex---availability-and-services"><span class='task'>12.</span>  Availability and Services</a>
 <a class="d2" href="#tasks">Tasks</a>
 <a class="d1" href="#ex---flexibility"><span class='task'>13.</span>  Flexibility</a>
+<a class="d2" href="#logical-view">Logical View</a>
+<a class="d2" href="#process-view">Process View</a>
+<a class="d2" href="#deployment-view">Deployment View</a>
 
         </nav>
 
@@ -877,12 +880,20 @@ replicas must stay consistent.</p>
 <li><p>Assuming you have a centralized deployment with all stateful components storing their state in the same database, propose a strategy to split the monolith into at least two different microservices. Model the new logical/deployment view as well as the interfaces of each microservice you introduce.</p>
 </li>
 </ol>
-<section class="pass"><span>&starf;&star;&star;: </span>1, one out of 2-5.</section><section class="ok"><span>&starf;&starf;&star;: </span>1, two out of 2-5.</section><section class="exceed"><span>&starf;&starf;&starf;: </span>1-5.</section></section>
+<section class="pass"><span>&starf;&star;&star;: </span>1, one out of 2-5.</section><section class="ok"><span>&starf;&starf;&star;: </span>1, two out of 2-5.</section><section class="exceed"><span>&starf;&starf;&starf;: </span>1-5.</section></section><p><strong>1.</strong> Classes must be automatically generated based on the courses chosen by the user.</p>
+<h2 id="logical-view-3">Logical View</h2>
+<img src="./puml_e25.svg"><h2 id="process-view-1">Process View</h2>
+<img src="./puml_e26.svg"><h2 id="deployment-view-1">Deployment View</h2>
+<img src="./puml_e27.svg"><p><strong>2.</strong> A new use case scenario that would not modify the architecture of the application is setting the URL of the Links Repository component.</p>
+<img src="./puml_e28.svg"><p><strong>3.</strong> In my case, all external APIs (Github, iCorsi, and golang-ical) have an adapter to talk with my application. Whenever one of these APIs introduces a breaking change, it is necessary to only modify the adapters to reflect the changes. no other modification to the rest of the architecture is required.</p>
+<img src="./puml_e29.svg"><p><strong>4.</strong> An entry point for plugins would be the Classroom component. In this case an institution could be able to add a page to display other info about the courses/grades/announcements (similarly to Moodle).</p>
+<img src="./puml_e30.svg"><p><strong>5.</strong> Part of the splitting has already been done in exercise 1, here I will be splitting the monolithic database structure.</p>
+<img src="./puml_e31.svg">
     </main>
 
 
 <footer>
-    5/16/2023, 11:55:01 AM
+    5/30/2023, 9:37:01 AM
 </footer>
 
 </body>
