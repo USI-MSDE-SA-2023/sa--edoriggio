@@ -1550,3 +1550,498 @@ Good: 1, two out of 2-5.
 Exceed: 1-5.
 
 }
+
+**1.** Classes must be automatically generated based on the courses chosen by the user.
+
+## Logical View
+
+```puml
+@startuml
+skinparam componentStyle rectangle
+
+!include <tupadr3/font-awesome/database>
+
+title USI Calendar
+
+
+''' COMPONENTS
+[User Interface] as UI
+[URL Database <$database{scale=0.33}>] as UDB
+[Courses Database <$database{scale=0.33}>] as CDB #8fffff
+[URL Middleman] as UMM
+[Courses Middleman] as CMM #8fffff
+[Notification System] as NS
+
+component "golang-ical Wrapper" {
+    [golang-ical] as GOIC
+    [golang-ical Adapter] as GOICA
+    
+    GOIC -0)- GOICA
+}
+
+component "Courses Exporter" {
+    [Courses Extractor] as CE
+    [Links Repository] as LR
+    
+    LR -0)- CE
+}
+
+component "Classroom" {
+    [Classroom] as CLA
+    [Chatroom] as CHT
+    [Document Repository] as DR
+    [Github Classroom] as GHCL
+    [Collector] as COLL
+    
+    CLA -(0- CHT
+    CLA -(0-- DR
+    CLA -(0- GHCL
+    DR -(0- COLL
+    GHCL -(0- COLL
+}
+
+component "GH/iC Wrapper" {
+    [iCorsi API] as ICC
+    [Github API] as GHC
+    [GH/iC Manager] as APIM
+    [GH/iC Adapter] as APIA
+    
+    APIM -(0- GHC
+    APIM -(0- ICC
+    APIA -(0- APIM
+}
+
+
+''' INTERFACES
+interface " " as CEXI
+interface " " as GOICI
+interface " " as UMMI
+interface " " as NSI
+interface " " as CLAI
+interface " " as UDBI
+interface " " as CDBI
+interface " " as GIAA
+interface " " as CMMI
+
+
+''' CONNECTIONS
+CE -- CEXI
+GOICA -- GOICI
+UMM -- UMMI
+NSI -- NS
+CLAI -- CLA
+UDBI - UDB
+GIAA -- APIA
+CMM -- CMMI
+CDB - CDBI
+
+GOICI )-- UMM
+UMM -( UDBI
+UMMI )-- UI
+UI --( NSI
+NS --( GIAA
+UI --( CLAI
+UMM ---( GIAA
+COLL --( GIAA
+CMMI )-- UI
+CEXI )-- CMM
+CDBI )- CMM
+
+
+skinparam monochrome true
+skinparam shadowing false
+skinparam defaultFontName Courier
+@enduml
+```
+
+## Process View
+```puml
+@startuml
+title Create Classrooms Based on Selected Courses
+
+!include <tupadr3/font-awesome/database>
+
+''' PARTICIPANTS
+participant "User Interface" as UI
+participant "Course Middleman" as CMM #8fffff
+
+box "Courses Exporter"
+participant "Courses Extractor" as CEX
+participant "Links Repository" as LRE
+end box
+
+participant "Courses Database <$database{scale=0.33}>" as CDB #8fffff
+participant "Classroom" as CLA
+
+''' CONNECTIONS
+UI -> CMM: Courses Selected
+activate CMM
+CMM -> CEX: Extract Courses
+activate CEX
+CEX -> LRE: Request Links
+activate LRE
+LRE -> CEX: Return Links
+deactivate LRE
+CEX -> CMM: Return Courses
+deactivate CEX
+CMM -> CDB: Save Courses for Current User
+CMM -> UI: Return Saved Courses
+deactivate CMM
+UI -> CLA: Create Classrooms
+
+skinparam monochrome true
+skinparam shadowing false
+skinparam defaultFontName Courier
+@enduml
+```
+
+## Deployment View
+```puml
+@startuml
+node "Frontend" {
+    [Web Application] as WAPP
+    [Notification System] as NS
+    
+    NS -- WAPP
+}
+
+database "Database" {
+    [Shortened URLs] as URLS
+    [Users' Courses] as COURSES
+}
+
+cloud "URLs Management Cloud" {
+    [URL Middleman] as URL
+    [golang-ical] as ICAL
+
+    component "API Manager" {
+        [API Manager] as API
+        [iCorsi API] as ICAPI
+        [Github API] as GHAPI
+        
+        API -- ICAPI
+        API -- GHAPI
+    }
+    
+    URL -- API
+    URL -- ICAL
+    URLS -- URL
+}
+
+cloud "Courses Management Cloud" {
+    [Courses Middleman] as CMM
+
+    component "Courses Extractor" {
+        [Extractor] as EXT
+        [Links Repository] as REPO
+        
+        EXT -- REPO
+    }
+    
+    CMM -- EXT
+    COURSES -- CMM
+}
+
+WAPP -- URL : "HTTPS"
+WAPP -- CMM : "HTTPS"
+
+skinparam monochrome true
+skinparam shadowing false
+skinparam defaultFontName Courier
+@enduml
+```
+
+**2.** A new use case scenario that would not modify the architecture of the application is setting the URL of the Links Repository component.
+
+```puml
+@startuml
+title Setting the URL of the Links Repository
+
+''' PARTICIPANTS
+participant "User Interface" as UI
+participant "Course Middleman" as CMM
+
+box "Courses Exporter"
+participant "Courses Extractor" as CEX
+participant "Links Repository" as LRE
+end box
+
+''' CONNECTIONS
+UI -> CMM: Pass new URL
+CMM -> CEX: Pass new URL
+CEX -> LRE: Set new URL
+
+skinparam monochrome true
+skinparam shadowing false
+skinparam defaultFontName Courier
+@enduml
+```
+
+**3.** In my case, all external APIs (Github, iCorsi, and golang-ical) have an adapter to talk with my application. Whenever one of these APIs introduces a breaking change, it is necessary to only modify the adapters to reflect the changes. no other modification to the rest of the architecture is required.
+
+```puml
+@startuml
+skinparam componentStyle rectangle
+
+!include <tupadr3/font-awesome/database>
+
+title USI Calendar
+
+
+''' COMPONENTS
+[User Interface] as UI
+[URL Database <$database{scale=0.33}>] as UDB
+[Courses Database <$database{scale=0.33}>] as CDB
+[URL Middleman] as UMM
+[Courses Middleman] as CMM
+[Notification System] as NS
+
+component "golang-ical Wrapper" {
+    [golang-ical] as GOIC
+    [golang-ical Adapter] as GOICA #8fffff
+    
+    GOIC -0)- GOICA
+}
+
+component "Courses Exporter" {
+    [Courses Extractor] as CE
+    [Links Repository] as LR
+    
+    LR -0)- CE
+}
+
+component "Classroom" {
+    [Classroom] as CLA
+    [Chatroom] as CHT
+    [Document Repository] as DR
+    [Github Classroom] as GHCL
+    [Collector] as COLL
+    
+    CLA -(0- CHT
+    CLA -(0-- DR
+    CLA -(0- GHCL
+    DR -(0- COLL
+    GHCL -(0- COLL
+}
+
+component "GH/iC Wrapper" {
+    [iCorsi API] as ICC
+    [Github API] as GHC
+    [GH/iC Manager] as APIM
+    [GH/iC Adapter] as APIA #8fffff
+    
+    APIM -(0- GHC
+    APIM -(0- ICC
+    APIA -(0- APIM
+}
+
+
+''' INTERFACES
+interface " " as CEXI
+interface " " as GOICI
+interface " " as UMMI
+interface " " as NSI
+interface " " as CLAI
+interface " " as UDBI
+interface " " as CDBI
+interface " " as GIAA
+interface " " as CMMI
+
+
+''' CONNECTIONS
+CE -- CEXI
+GOICA -- GOICI
+UMM -- UMMI
+NSI -- NS
+CLAI -- CLA
+UDBI - UDB
+GIAA -- APIA
+CMM -- CMMI
+CDB - CDBI
+
+GOICI )-- UMM
+UMM -( UDBI
+UMMI )-- UI
+UI --( NSI
+NS --( GIAA
+UI --( CLAI
+UMM ---( GIAA
+COLL --( GIAA
+CMMI )-- UI
+CEXI )-- CMM
+CDBI )- CMM
+
+
+skinparam monochrome true
+skinparam shadowing false
+skinparam defaultFontName Courier
+@enduml
+```
+
+
+**4.** An entry point for plugins would be the Classroom component. In this case an institution could be able to add a page to display other info about the courses/grades/announcements (similarly to Moodle).
+
+```puml
+@startuml
+skinparam componentStyle rectangle
+
+!include <tupadr3/font-awesome/database>
+
+title USI Calendar
+
+
+''' COMPONENTS
+[User Interface] as UI
+[URL Database <$database{scale=0.33}>] as UDB
+[Courses Database <$database{scale=0.33}>] as CDB
+[URL Middleman] as UMM
+[Courses Middleman] as CMM
+[Notification System] as NS
+[Plugin Manager] as PLUG #8fffff
+[Grades Plugin] as GPLUG #8fffff
+
+component "golang-ical Wrapper" {
+    [golang-ical] as GOIC
+    [golang-ical Adapter] as GOICA
+    
+    GOIC -0)- GOICA
+}
+
+component "Courses Exporter" {
+    [Courses Extractor] as CE
+    [Links Repository] as LR
+    
+    LR -0)- CE
+}
+
+component "Classroom" {
+    [Classroom] as CLA
+    [Chatroom] as CHT
+    [Document Repository] as DR
+    [Github Classroom] as GHCL
+    [Collector] as COLL
+
+    CLA -(0- CHT
+    CLA -(0-- DR
+    CLA -(0- GHCL
+    DR -(0- COLL
+    GHCL -(0- COLL
+}
+
+component "GH/iC Wrapper" {
+    [iCorsi API] as ICC
+    [Github API] as GHC
+    [GH/iC Manager] as APIM
+    [GH/iC Adapter] as APIA
+    
+    APIM -(0- GHC
+    APIM -(0- ICC
+    APIA -(0- APIM
+}
+
+
+''' INTERFACES
+interface " " as CEXI
+interface " " as GOICI
+interface " " as UMMI
+interface " " as NSI
+interface " " as CLAI
+interface " " as UDBI
+interface " " as CDBI
+interface " " as GIAA
+interface " " as CMMI
+interface " " as PLUGI
+
+
+''' CONNECTIONS
+CE -- CEXI
+GOICA -- GOICI
+UMM -- UMMI
+NSI -- NS
+CLAI -- CLA
+UDBI - UDB
+GIAA -- APIA
+CMM -- CMMI
+CDB - CDBI
+PLUG -- PLUGI
+
+GOICI )-- UMM
+UMM -( UDBI
+UMMI )-- UI
+UI --( NSI
+NS --( GIAA
+UI --( CLAI
+UMM ---( GIAA
+COLL --( GIAA
+CMMI )-- UI
+CEXI )-- CMM
+CDBI )- CMM
+PLUGI )-- CLA
+GPLUG -( PLUGI
+
+
+skinparam monochrome true
+skinparam shadowing false
+skinparam defaultFontName Courier
+@enduml
+```
+
+**5.** Part of the splitting has already been done in exercise 1, here I will be splitting the monolithic database structure.
+
+```puml
+@startuml
+node "Frontend" {
+    [Web Application] as WAPP
+    [Notification System] as NS
+    
+    NS -- WAPP
+}
+
+database "URLs Database" {
+    [Shortened URLs] as URLS
+}
+
+database "Courses Database" {
+    [Users' Courses] as COURSES
+}
+
+cloud "URLs Management Cloud" {
+    [URL Middleman] as URL
+    [golang-ical] as ICAL
+
+    component "API Manager" {
+        [API Manager] as API
+        [iCorsi API] as ICAPI
+        [Github API] as GHAPI
+        
+        API -- ICAPI
+        API -- GHAPI
+    }
+    
+    URL -- API
+    URL -- ICAL
+    URLS -- URL
+}
+
+cloud "Courses Management Cloud" {
+    [Courses Middleman] as CMM
+
+    component "Courses Extractor" {
+        [Extractor] as EXT
+        [Links Repository] as REPO
+        
+        EXT -- REPO
+    }
+    
+    CMM -- EXT
+    COURSES -- CMM
+}
+
+WAPP -- URL : "HTTPS"
+WAPP -- CMM : "HTTPS"
+
+skinparam monochrome true
+skinparam shadowing false
+skinparam defaultFontName Courier
+@enduml
+```
